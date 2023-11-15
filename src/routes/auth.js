@@ -1,11 +1,14 @@
 import express from "express";
-import { login, logout, refreshToken, register } from "./../controllers/authController.js";
+import { login } from "../controllers/auth/login.js";
+import { logout } from "../controllers/auth/logout.js";
+import { register } from "../controllers/auth/register.js";
+import { refreshToken } from "../controllers/auth/refreshToken.js";
 
 const authRouter = express.Router();
 
-authRouter.post('/auth/login', login);
-authRouter.put('/auth/register', register);
-authRouter.delete('/auth/logout', logout);
-authRouter.put('/auth/refresh', refreshToken);
+authRouter.post('/api/auth/login', login);
+authRouter.put('/api/auth/register', register);
+authRouter.delete('/api/auth/logout', logout);
+authRouter.put('/api/auth/refresh', refreshToken);
 
 export default authRouter;
