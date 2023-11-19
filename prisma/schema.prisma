@@ -13,17 +13,133 @@ datasource db {
 model Jwt {
    id            Int      @id @default(autoincrement())
    user_id       Int
+   customer_id   Int
    refresh_token String
    created_at    DateTime @default(now())
    user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+   customer      Customer @relation(fields: [customer_id], references: [id], onDelete: Cascade)
 }
 
 model User {
    id         Int      @id @default(autoincrement())
-   username   String   @unique
+   first_name String
+   last_name  String
    email      String   @unique
    password   String
-   role       String
+   phone      String
+   address    String
+   role       Int
    created_at DateTime @default(now())
    jwt        Jwt[]
+   event      Event[]
+   banner     Banner[]
+}
+
+model Customer {
+   id         Int       @id @default(autoincrement())
+   first_name String
+   last_name  String
+   email      String    @unique
+   password   String
+   phone      String
+   address    String
+   created_at DateTime  @default(now())
+   jwt        Jwt[]
+   order      Order[]
+   product    Product[]
+   riview     Riview[]
+}
+
+model Order {
+   id           Int          @id @default(autoincrement())
+   customer_id  Int
+   order_date   DateTime     @default(now())
+   total_amount Float
+   created_at   DateTime     @default(now())
+   customer     Customer     @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+   order_item   Order_Item[]
+}
+
+model Product {
+   id             Int          @id @default(autoincrement())
+   customer_id    Int
+   product_name   String
+   product_image  String
+   description    String
+   price          Float
+   stock_quantity Int
+   created_at     DateTime     @default(now())
+   customer       Customer     @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+   riview         Riview[]
+   order_item     Order_Item[]
+}
+
+model Riview {
+   id          Int      @id @default(autoincrement())
+   product_id  Int
+   customer_id Int
+   rating      String
+   comment     String
+   created_at  DateTime @default(now())
+   product     Product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
+   customer    Customer @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+}
+
+model Order_Item {
+   id         Int      @id @default(autoincrement())
+   product_id Int
+   order_id   Int
+   quantity   String
+   subtotal   String
+   created_at DateTime @default(now())
+   product    Product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
+   order      Order    @relation(fields: [order_id], references: [id], onDelete: Cascade)
+}
+
+model Event {
+   id                Int            @id @default(autoincrement())
+   user_id           Int
+   img_event         String
+   banner_event      String
+   title_event       String
+   price_event       String
+   tag_event         String
+   date_event        DateTime
+   last_regist_event DateTime
+   kuota_event       Int
+   sisa_event        Int
+   status            Int
+   created_at        DateTime       @default(now())
+   user              User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+   detail_event      Detail_Event[]
+}
+
+model Banner {
+   id              Int      @id @default(autoincrement())
+   user_id         Int
+   title_banner    String
+   priority_banner String
+   status_banner   String
+   created_at      DateTime @default(now())
+   user            User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model Timeline {
+   id           Int            @id @default(autoincrement())
+   waktu        DateTime
+   title        String
+   created_at   DateTime       @default(now())
+   detail_event Detail_Event[]
+}
+
+model Detail_Event {
+   id                Int      @id @default(autoincrement())
+   event_id          Int
+   description_event String
+   sponsor_event     String
+   detail_event      String
+   timeline_id       Int
+   created_at        DateTime @default(now())
+   event             Event    @relation(fields: [event_id], references: [id], onDelete: Cascade)
+   timeline          Timeline @relation(fields: [timeline_id], references: [id], onDelete: Cascade)
 }
