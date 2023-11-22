@@ -12,16 +12,16 @@ datasource db {
 
 model Jwt {
    id            Int      @id @default(autoincrement())
-   user_id       Int
-   customer_id   Int
+   user_id       String
+   customer_id   String
    refresh_token String
    created_at    DateTime @default(now())
-   user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-   customer      Customer @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+   user          User     @relation(fields: [user_id], references: [uuid], onDelete: Cascade)
+   customer      Customer @relation(fields: [customer_id], references: [uuid], onDelete: Cascade)
 }
 
 model User {
-   id         Int      @id @default(autoincrement())
+   uuid       String   @id @default(uuid())
    first_name String
    last_name  String
    email      String   @unique
@@ -36,7 +36,7 @@ model User {
 }
 
 model Customer {
-   id         Int       @id @default(autoincrement())
+   uuid       String    @id @default(uuid())
    first_name String
    last_name  String
    email      String    @unique
@@ -51,54 +51,54 @@ model Customer {
 }
 
 model Order {
-   id           Int          @id @default(autoincrement())
-   customer_id  Int
+   uuid         String       @id @default(uuid())
+   customer_id  String
    order_date   DateTime     @default(now())
    total_amount Float
    created_at   DateTime     @default(now())
-   customer     Customer     @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+   customer     Customer     @relation(fields: [customer_id], references: [uuid], onDelete: Cascade)
    order_item   Order_Item[]
 }
 
 model Product {
-   id             Int          @id @default(autoincrement())
-   customer_id    Int
+   uuid           String       @id @default(uuid())
+   customer_id    String
    product_name   String
    product_image  String
    description    String
    price          Float
    stock_quantity Int
    created_at     DateTime     @default(now())
-   customer       Customer     @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+   customer       Customer     @relation(fields: [customer_id], references: [uuid], onDelete: Cascade)
    riview         Riview[]
    order_item     Order_Item[]
 }
 
 model Riview {
-   id          Int      @id @default(autoincrement())
-   product_id  Int
-   customer_id Int
+   uuid        String   @id @default(uuid())
+   product_id  String
+   customer_id String
    rating      String
    comment     String
    created_at  DateTime @default(now())
-   product     Product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
-   customer    Customer @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+   product     Product  @relation(fields: [product_id], references: [uuid], onDelete: Cascade)
+   customer    Customer @relation(fields: [customer_id], references: [uuid], onDelete: Cascade)
 }
 
 model Order_Item {
-   id         Int      @id @default(autoincrement())
-   product_id Int
-   order_id   Int
+   uuid       String   @id @default(uuid())
+   product_id String
+   order_id   String
    quantity   String
    subtotal   String
    created_at DateTime @default(now())
-   product    Product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
-   order      Order    @relation(fields: [order_id], references: [id], onDelete: Cascade)
+   product    Product  @relation(fields: [product_id], references: [uuid], onDelete: Cascade)
+   order      Order    @relation(fields: [order_id], references: [uuid], onDelete: Cascade)
 }
 
 model Event {
-   id                Int            @id @default(autoincrement())
-   user_id           Int
+   uuid              String         @id @default(uuid())
+   user_id           String
    img_event         String
    banner_event      String
    title_event       String
@@ -110,18 +110,18 @@ model Event {
    sisa_event        Int
    status            Int
    created_at        DateTime       @default(now())
-   user              User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+   user              User           @relation(fields: [user_id], references: [uuid], onDelete: Cascade)
    detail_event      Detail_Event[]
 }
 
 model Banner {
-   id              Int      @id @default(autoincrement())
-   user_id         Int
+   uuid            String   @id @default(uuid())
+   user_id         String
    title_banner    String
    priority_banner String
    status_banner   String
    created_at      DateTime @default(now())
-   user            User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+   user            User     @relation(fields: [user_id], references: [uuid], onDelete: Cascade)
 }
 
 model Timeline {
@@ -134,12 +134,12 @@ model Timeline {
 
 model Detail_Event {
    id                Int      @id @default(autoincrement())
-   event_id          Int
+   event_id          String // Change the type to String to match the uuid type in the Event model
    description_event String
    sponsor_event     String
    detail_event      String
    timeline_id       Int
    created_at        DateTime @default(now())
-   event             Event    @relation(fields: [event_id], references: [id], onDelete: Cascade)
+   event             Event    @relation(fields: [event_id], references: [uuid], onDelete: Cascade)
    timeline          Timeline @relation(fields: [timeline_id], references: [id], onDelete: Cascade)
 }
