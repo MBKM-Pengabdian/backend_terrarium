@@ -1,11 +1,13 @@
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 
 // Update a product
-app.put('/products/:id', async (req, res) => {
-   const { id } = req.params;
+export const updateProduct = async (req, res) => {
+   const { productId } = req.params;
    const { customer_id, product_name, product_image, description, price, stock_quantity } = req.body;
 
    const updatedProduct = await prisma.product.update({
-      where: { id },
+      where: { uuid: productId },
       data: {
          customer_id,
          product_name,
@@ -21,4 +23,4 @@ app.put('/products/:id', async (req, res) => {
       message: "Updated",
       data: updatedProduct
    });
-});
+};

@@ -1,6 +1,8 @@
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 
 // Delete a product
-app.delete('/products/:id', async (req, res) => {
+export const deleteProduct = async (req, res) => {
    const { productId } = req.params;
 
    const deletedProduct = await prisma.product.delete({
@@ -11,4 +13,4 @@ app.delete('/products/:id', async (req, res) => {
       status: 200,
       message: "Data product berhasil dihapus",
    });
-});
+};
