@@ -6,12 +6,12 @@ const prisma = new PrismaClient();
 // Create a product
 export const createProduct = async (req, res) => {
    try {
-      const { customer_id, product_name, product_image, description, price, stock_quantity } = req.body;
+      const { user_id, product_name, product_image, description, price, stock_quantity } = req.body;
 
       const newProduct = await prisma.Product.create({
          data: {
+            user_id,
             uuid: uuidv4(),
-            customer_id,
             product_name,
             product_image,
             description,

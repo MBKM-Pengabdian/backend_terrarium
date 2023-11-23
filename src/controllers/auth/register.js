@@ -5,7 +5,7 @@ import { validateUsername } from '../../utils/validation.js'
 export const register = async (req, res) => {
    try {
       const prisma = new PrismaClient();
-      const { username, password, email, role } = req.body;
+      const { username, password, email, phone, address, role } = req.body;
 
       const checkUsername = validateUsername(username);
 
@@ -37,11 +37,14 @@ export const register = async (req, res) => {
                role: role,
                email: email,
                username: username,
+               phone: phone,
+               address: address,
                password: hashedPassword,
             }
          });
 
          return res.status(201).send({
+            status: 201,
             message: `SUCCESS`,
          });
       }
@@ -50,6 +53,7 @@ export const register = async (req, res) => {
          message: 'Username Already Exist',
       });
    } catch (error) {
+      console.log(error);
       return res.status(500).send({
          message: 'An Error Has Occured'
       });
