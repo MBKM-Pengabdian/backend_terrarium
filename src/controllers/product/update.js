@@ -4,12 +4,12 @@ const prisma = new PrismaClient();
 // Update a product
 export const updateProduct = async (req, res) => {
    const { productId } = req.params;
-   const { customer_id, product_name, product_image, description, price, stock_quantity } = req.body;
+   const { user_id, product_name, product_image, description, price, stock_quantity } = req.body;
 
    const updatedProduct = await prisma.product.update({
       where: { uuid: productId },
       data: {
-         customer_id,
+         user_id,
          product_name,
          product_image,
          description,
