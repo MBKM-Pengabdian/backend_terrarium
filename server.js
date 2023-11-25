@@ -5,6 +5,7 @@ import authRouter from './src/routes/auth.js';
 import productRouter from './src/routes/product.js';
 import customerRouter from './src/routes/customers.js';
 import userRouter from './src/routes/user.js';
+import EventRouter from './src/routes/event.js';
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(authRouter);
 app.use('/api/user', userRouter)
 app.use('/api/product', productRouter)
 app.use('/api/customer', customerRouter)
+app.use('/api/event', EventRouter)
 
 app.listen(config.APP_PORT, () => {
    console.log(`Server Activated On Port ${config.APP_PORT}`);
