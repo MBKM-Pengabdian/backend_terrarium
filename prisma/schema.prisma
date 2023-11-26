@@ -95,24 +95,6 @@ model Order_Item {
    order      Order    @relation(fields: [order_id], references: [uuid], onDelete: Cascade)
 }
 
-model Event {
-   uuid              String         @id @default(uuid())
-   user_id           String
-   img_event         String
-   banner_event      String
-   title_event       String
-   price_event       String
-   tag_event         String
-   date_event        DateTime
-   last_regist_event DateTime
-   kuota_event       Int
-   sisa_event        Int
-   status            Int
-   created_at        DateTime       @default(now())
-   user              User           @relation(fields: [user_id], references: [uuid], onDelete: Cascade)
-   detail_event      Detail_Event[]
-}
-
 model Banner {
    uuid            String   @id @default(uuid())
    user_id         String
@@ -123,22 +105,40 @@ model Banner {
    user            User     @relation(fields: [user_id], references: [uuid], onDelete: Cascade)
 }
 
-model Timeline {
-   id           Int            @id @default(autoincrement())
-   waktu        DateTime
-   title        String
+model Event {
+   uuid         String         @id @default(uuid())
+   user_id      String
+   img_event    String
+   title_event  String
+   price_event  String
+   status       Int
    created_at   DateTime       @default(now())
+   user         User           @relation(fields: [user_id], references: [uuid], onDelete: Cascade)
    detail_event Detail_Event[]
 }
 
 model Detail_Event {
-   id                Int      @id @default(autoincrement())
+   id                Int        @id @default(autoincrement())
    event_id          String // Change the type to String to match the uuid type in the Event model
    description_event String
    sponsor_event     String
-   detail_event      String
-   timeline_id       Int
-   created_at        DateTime @default(now())
-   event             Event    @relation(fields: [event_id], references: [uuid], onDelete: Cascade)
-   timeline          Timeline @relation(fields: [timeline_id], references: [id], onDelete: Cascade)
+   speaker_event     String
+   banner_event      String
+   tag_event         String
+   date_event        String
+   last_regist_event String
+   kuota_event       Int
+   sisa_event        Int
+   created_at        DateTime   @default(now())
+   event             Event      @relation(fields: [event_id], references: [uuid], onDelete: Cascade)
+   timeline          Timeline[]
+}
+
+model Timeline {
+   id              Int          @id @default(autoincrement())
+   detail_event_id Int
+   waktu           String
+   title           String
+   created_at      DateTime     @default(now())
+   detail_event    Detail_Event @relation(fields: [detail_event_id], references: [id], onDelete: Cascade)
 }
