@@ -5,12 +5,22 @@ const prisma = new PrismaClient();
 
 // Read all events
 export const getAllEvent = async (req, res) => {
-    const events = await prisma.event.findMany();
-    res.status(200).send({
-        status: 200,
-        message: "OK",
-        data: events
+    const events = await prisma.event.findMany({
+        include: {
+            detail_event: {
+                include: {
+                    timeline: true, // Include timeline details
+                },
+            },
+        },
     });
+
+    res.status(200).json({
+        status: 200,
+        message: 'OK',
+        data: events,
+    });
+
 };
 
 // Read a specific events
@@ -21,6 +31,13 @@ export const geteventById = async (req, res) => {
     const event = await prisma.event.findUnique({
         where: {
             uuid: eventId
+        },
+        include: {
+            detail_event: {
+                include: {
+                    timeline: true, // Include timeline details
+                },
+            },
         },
     });
 
