@@ -98,9 +98,11 @@ model Order_Item {
 model Banner {
    uuid            String   @id @default(uuid())
    user_id         String
+   img_banner      String
    title_banner    String
-   priority_banner String
-   status_banner   String
+   desc_banner     String
+   priority_banner Int
+   status_banner   Int
    created_at      DateTime @default(now())
    user            User     @relation(fields: [user_id], references: [uuid], onDelete: Cascade)
 }
