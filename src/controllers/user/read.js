@@ -13,11 +13,9 @@ export const getAllUsers = async (req, res) => {
    });
 };
 
-// Read a specific product
+// Read a specific User
 export const getUserById = async (req, res) => {
-   const {
-      userId
-   } = req.params;
+   const { userId } = req.params;
    const user = await prisma.user.findUnique({
       where: {
          uuid: userId
