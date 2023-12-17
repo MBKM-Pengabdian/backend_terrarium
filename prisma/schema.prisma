@@ -13,11 +13,9 @@ datasource db {
 model Jwt {
    id            Int      @id @default(autoincrement())
    user_id       String
-   customer_id   String
    refresh_token String
    created_at    DateTime @default(now())
    user          User     @relation(fields: [user_id], references: [uuid], onDelete: Cascade)
-   customer      Customer @relation(fields: [customer_id], references: [uuid], onDelete: Cascade)
 }
 
 model User {
@@ -44,7 +42,6 @@ model Customer {
    phone      String
    address    String
    created_at DateTime @default(now())
-   jwt        Jwt[]
    order      Order[]
    riview     Riview[]
 }

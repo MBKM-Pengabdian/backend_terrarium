@@ -20,7 +20,7 @@ export const refreshToken = async (req, res) => {
          const accessToken = sign({
             userId: getJwtByUserIdAndToken.user_id
          }, config.ACCESS_TOKEN_SECRET, {
-            expiresIn: '10m'
+            expiresIn: '10s'
          });
 
          const refresh_token = sign({
@@ -36,8 +36,11 @@ export const refreshToken = async (req, res) => {
 
          await prisma.jwt.create({
             data: {
-               user_id: getJwtByUserIdAndToken.user_id,
+               user: getJwtByUserIdAndToken.user_id,
                refresh_token,
+               user: {
+                  connect: { uuid: getJwtByUserIdAndToken.user_id } // Connect to an existing user using its uuid
+               }
             }
          });
 
