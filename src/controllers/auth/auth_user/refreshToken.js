@@ -1,5 +1,5 @@
 import pkg from 'jsonwebtoken';
-import config from '../../config/app.js';
+import config from '../../../config/app.js';
 import { PrismaClient } from '@prisma/client';
 
 export const refreshToken = async (req, res) => {
@@ -15,17 +15,29 @@ export const refreshToken = async (req, res) => {
       });
 
       if (getJwtByUserIdAndToken !== null) {
-         verify(refreshToken, config.REFRESH_TOKEN_SECRET);
+         verify(refreshToken, getUserByUsernameAndPassword.role === 'superadmin'
+            ? config.REFRESH_TOKEN_SECRET_SUPER_ADMIN
+            : config.REFRESH_TOKEN_SECRET_ADMIN);
+
+         const accessTokenSecret = getUserByUsernameAndPassword.role === 'superadmin'
+            ? config.ACCESS_TOKEN_SECRET_SUPER_ADMIN
+            : config.ACCESS_TOKEN_SECRET_ADMIN;
+
+         const refreshTokenSecret = getUserByUsernameAndPassword.role === 'superadmin'
+            ? config.REFRESH_TOKEN_SECRET_SUPER_ADMIN
+            : config.REFRESH_TOKEN_SECRET_ADMIN;
 
          const accessToken = sign({
             userId: getJwtByUserIdAndToken.user_id
-         }, config.ACCESS_TOKEN_SECRET, {
-            expiresIn: '10s'
+         }, accessTokenSecret, {
+            expiresIn: '30d'
          });
 
          const refresh_token = sign({
             userId: getJwtByUserIdAndToken.user_id
-         }, config.REFRESH_TOKEN_SECRET);
+         }, refreshTokenSecret, {
+            expiresIn: '30d'
+         });
 
          await prisma.jwt.deleteMany({
             where: {
@@ -39,13 +51,13 @@ export const refreshToken = async (req, res) => {
                user: getJwtByUserIdAndToken.user_id,
                refresh_token,
                user: {
-                  connect: { uuid: getJwtByUserIdAndToken.user_id } // Connect to an existing user using its uuid
+                  connect: { uuid: getJwtByUserIdAndToken.user_id }
                }
             }
          });
 
          return res.status(201).send({
-            message: `SUCCESS`,
+            message: 'SUCCESS',
             data: {
                accessToken,
                refresh_token
