@@ -1,6 +1,6 @@
 import bycrypt from 'bcryptjs';
 import { PrismaClient } from '@prisma/client';
-import { validateUsername } from '../../utils/validation.js'
+import { validateUsername } from '../../../utils/validation.js'
 
 export const register = async (req, res) => {
    try {

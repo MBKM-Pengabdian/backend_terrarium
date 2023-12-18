@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import pkg from 'jsonwebtoken';
-import config from '../../config/app.js';
+import config from '../../../config/app.js';
 import { PrismaClient } from '@prisma/client';
 
 export const login = async (req, res) => {
@@ -21,16 +21,26 @@ export const login = async (req, res) => {
          const isPasswordMatch = bcrypt.compareSync(password, getUserByUsernameAndPassword.password);
 
          if (isPasswordMatch) {
+            const accessTokenSecret = getUserByUsernameAndPassword.role === 'superadmin'
+               ? config.ACCESS_TOKEN_SECRET_SUPER_ADMIN
+               : config.ACCESS_TOKEN_SECRET_ADMIN;
+
+            const refreshTokenSecret = getUserByUsernameAndPassword.role === 'superadmin'
+               ? config.REFRESH_TOKEN_SECRET_SUPER_ADMIN
+               : config.REFRESH_TOKEN_SECRET_ADMIN;
+
             const accessToken = sign({
                userId: getUserByUsernameAndPassword.uuid
-            }, config.ACCESS_TOKEN_SECRET, {
+            }, accessTokenSecret, {
                // TODO Uncomment When Production
-               expiresIn: '10s'
+               expiresIn: '30d'
             });
 
             const refresh_token = sign({
                userId: getUserByUsernameAndPassword.uuid
-            }, config.REFRESH_TOKEN_SECRET);
+            }, refreshTokenSecret, {
+               expiresIn: '15s'
+            });
 
             // Insert New Token
             await prisma.jwt.create({
@@ -48,6 +58,7 @@ export const login = async (req, res) => {
                   email: getUserByUsernameAndPassword.email,
                   role: getUserByUsernameAndPassword.role,
                   refreshToken: refresh_token,
+                  accessToken: accessToken
                }
             });
          }
