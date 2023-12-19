@@ -14,62 +14,85 @@ export const refreshToken = async (req, res) => {
          },
       });
 
-      if (getJwtByUserIdAndToken !== null) {
-         verify(refreshToken, getUserByUsernameAndPassword.role === 'superadmin'
-            ? config.REFRESH_TOKEN_SECRET_SUPER_ADMIN
-            : config.REFRESH_TOKEN_SECRET_ADMIN);
+      try {
+         if (getJwtByUserIdAndToken !== null) {
+            const decodedToken = verify(refreshToken, getJwtByUserIdAndToken.role === 'superadmin'
+               ? config.REFRESH_TOKEN_SECRET_SUPER_ADMIN
+               : config.REFRESH_TOKEN_SECRET_ADMIN);
 
-         const accessTokenSecret = getUserByUsernameAndPassword.role === 'superadmin'
-            ? config.ACCESS_TOKEN_SECRET_SUPER_ADMIN
-            : config.ACCESS_TOKEN_SECRET_ADMIN;
+            const userIdFromToken = decodedToken.userId;
 
-         const refreshTokenSecret = getUserByUsernameAndPassword.role === 'superadmin'
-            ? config.REFRESH_TOKEN_SECRET_SUPER_ADMIN
-            : config.REFRESH_TOKEN_SECRET_ADMIN;
+            const accessTokenSecret = getJwtByUserIdAndToken.role === 'superadmin'
+               ? config.ACCESS_TOKEN_SECRET_SUPER_ADMIN
+               : config.ACCESS_TOKEN_SECRET_ADMIN;
 
-         const accessToken = sign({
-            userId: getJwtByUserIdAndToken.user_id
-         }, accessTokenSecret, {
-            expiresIn: '30d'
-         });
+            const refreshTokenSecret = getJwtByUserIdAndToken.role === 'superadmin'
+               ? config.REFRESH_TOKEN_SECRET_SUPER_ADMIN
+               : config.REFRESH_TOKEN_SECRET_ADMIN;
 
-         const refresh_token = sign({
-            userId: getJwtByUserIdAndToken.user_id
-         }, refreshTokenSecret, {
-            expiresIn: '30d'
-         });
+            const accessToken = sign({
+               userId: userIdFromToken
+            }, accessTokenSecret, {
+               expiresIn: '30d'
+            });
 
-         await prisma.jwt.deleteMany({
-            where: {
-               user_id: getJwtByUserIdAndToken.user_id,
-               refresh_token: refreshToken,
-            }
-         });
+            const refresh_token = sign({
+               userId: userIdFromToken
+            }, refreshTokenSecret, {
+               expiresIn: '30d'
+            });
 
-         await prisma.jwt.create({
-            data: {
-               user: getJwtByUserIdAndToken.user_id,
-               refresh_token,
-               user: {
-                  connect: { uuid: getJwtByUserIdAndToken.user_id }
+            await prisma.jwt.deleteMany({
+               where: {
+                  user_id: userIdFromToken,
+                  refresh_token: refreshToken,
                }
-            }
-         });
+            });
 
-         return res.status(201).send({
-            message: 'SUCCESS',
-            data: {
-               accessToken,
-               refresh_token
-            }
+            await prisma.jwt.create({
+               data: {
+                  user: getJwtByUserIdAndToken.user_id,
+                  refresh_token,
+                  role: getJwtByUserIdAndToken.role,
+                  user: {
+                     connect: {
+                        uuid: getJwtByUserIdAndToken.user_id,
+                     }
+                  }
+               }
+            });
+
+            return res.status(201).send({
+               message: 'SUCCESS',
+               data: {
+                  accessToken,
+                  refresh_token
+               }
+            });
+         }
+      } catch (error) {
+         console.log(error);
+
+         if (error.name === 'TokenExpiredError') {
+            return res.status(401).send({
+               message: 'TOKEN_EXPIRED',
+            });
+         }
+
+      }
+
+      if (!refreshToken) {
+         return res.status(404).send({
+            message: 'No Token Found',
          });
       }
 
-      return res.status(404).send({
-         message: 'No Token Found',
+      res.status(401).send({
+         message: 'INVALID_TOKEN',
       });
+
    } catch (error) {
-      console.error(error);
+      console.log(error);
       return res.status(500).send({
          message: 'An Error Has Occured'
       });

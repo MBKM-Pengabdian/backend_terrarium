@@ -2,6 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import config from './src/config/app.js';
 import authRouter from './src/routes/authUser.js';
+import authCustomerRouter from './src/routes/authCustomer.js';
 import productRouter from './src/routes/product.js';
 import customerRouter from './src/routes/customers.js';
 import userRouter from './src/routes/user.js';
@@ -13,7 +14,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.use(authRouter);
+app.use('/api/auth/user', authRouter);
+app.use('/api/auth/customer', authCustomerRouter);
 app.use('/api/user', userRouter)
 app.use('/api/product', productRouter)
 app.use('/api/customer', customerRouter)

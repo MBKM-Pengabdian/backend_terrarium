@@ -13,7 +13,7 @@ export const logout = async (req, res) => {
       }
 
       // Check if refreshToken exists in the database
-      const existingToken = await prisma.jwt.findFirst({
+      const existingToken = await prisma.jwt_Customer.findFirst({
          where: {
             refresh_token: refreshToken,
          },
@@ -26,7 +26,7 @@ export const logout = async (req, res) => {
       }
 
       // Delete the refreshToken from the database
-      await prisma.jwt.deleteMany({
+      await prisma.jwt_Customer.deleteMany({
          where: {
             refresh_token: refreshToken,
          },

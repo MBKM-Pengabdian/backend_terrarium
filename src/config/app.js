@@ -9,7 +9,10 @@ const config = {
    REFRESH_TOKEN_SECRET_ADMIN: 'ini-admin-wkwk',
 
    ACCESS_TOKEN_SECRET_SUPER_ADMIN: 'ini-superadmin-wkwk',
-   REFRESH_TOKEN_SECRET_SUPER_ADMIN: 'ini-superadmin-wkwk'
+   REFRESH_TOKEN_SECRET_SUPER_ADMIN: 'ini-superadmin-wkwk',
+
+   ACCESS_TOKEN_SECRET_CUSTOMER: 'ini-customer-wkwk',
+   REFRESH_TOKEN_SECRET_CUSTOMER: 'ini-customer-wkwk',
 }
 
 export default config;
