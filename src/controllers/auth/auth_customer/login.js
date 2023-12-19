@@ -10,7 +10,7 @@ export const login = async (req, res) => {
       const { username, password } = req.body;
 
       // Check If Username Exist
-      const getUserByUsernameAndPassword = await prisma.user.findFirst({
+      const getUserByUsernameAndPassword = await prisma.customer.findFirst({
          where: {
             username
          }
@@ -21,32 +21,26 @@ export const login = async (req, res) => {
          const isPasswordMatch = bcrypt.compareSync(password, getUserByUsernameAndPassword.password);
 
          if (isPasswordMatch) {
-            const accessTokenSecret = getUserByUsernameAndPassword.role === 'superadmin'
-               ? config.ACCESS_TOKEN_SECRET_SUPER_ADMIN
-               : config.ACCESS_TOKEN_SECRET_ADMIN;
 
-            const refreshTokenSecret = getUserByUsernameAndPassword.role === 'superadmin'
-               ? config.REFRESH_TOKEN_SECRET_SUPER_ADMIN
-               : config.REFRESH_TOKEN_SECRET_ADMIN;
+            const accessTokenSecret = config.ACCESS_TOKEN_SECRET_CUSTOMER
+            const refreshTokenSecret = config.REFRESH_TOKEN_SECRET_CUSTOMER
 
             const accessToken = sign({
-               userId: getUserByUsernameAndPassword.uuid
+               customerId: getUserByUsernameAndPassword.uuid
             }, accessTokenSecret, {
-               // TODO Uncomment When Production
                expiresIn: '30d'
             });
 
             const refresh_token = sign({
-               userId: getUserByUsernameAndPassword.uuid
+               customerId: getUserByUsernameAndPassword.uuid
             }, refreshTokenSecret, {
                expiresIn: '30d'
             });
 
             // Insert New Token
-            await prisma.jwt.create({
+            await prisma.jwt_Customer.create({
                data: {
-                  user_id: getUserByUsernameAndPassword.uuid,
-                  role: getUserByUsernameAndPassword.role,
+                  customer_id: getUserByUsernameAndPassword.uuid,
                   refresh_token,
                }
             });
@@ -54,10 +48,9 @@ export const login = async (req, res) => {
             return res.status(200).send({
                message: 'SUCCESS',
                data: {
-                  userId: getUserByUsernameAndPassword.uuid,
+                  customerId: getUserByUsernameAndPassword.uuid,
                   username: getUserByUsernameAndPassword.username,
                   email: getUserByUsernameAndPassword.email,
-                  role: getUserByUsernameAndPassword.role,
                   refreshToken: refresh_token,
                   accessToken: accessToken
                }

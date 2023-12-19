@@ -12,10 +12,19 @@ datasource db {
 
 model Jwt {
    id            Int      @id @default(autoincrement())
+   role          String
    user_id       String
    refresh_token String
    created_at    DateTime @default(now())
    user          User     @relation(fields: [user_id], references: [uuid], onDelete: Cascade)
+}
+
+model Jwt_Customer {
+   id            Int      @id @default(autoincrement())
+   customer_id   String
+   refresh_token String
+   created_at    DateTime @default(now())
+   customer      Customer @relation(fields: [customer_id], references: [uuid], onDelete: Cascade)
 }
 
 model User {
@@ -34,16 +43,16 @@ model User {
 }
 
 model Customer {
-   uuid       String   @id @default(uuid())
-   first_name String
-   last_name  String
-   email      String   @unique
+   uuid       String         @id @default(uuid())
+   username   String
+   email      String         @unique
    password   String
    phone      String
    address    String
-   created_at DateTime @default(now())
+   created_at DateTime       @default(now())
    order      Order[]
    riview     Riview[]
+   jwt        Jwt_Customer[]
 }
 
 model Order {

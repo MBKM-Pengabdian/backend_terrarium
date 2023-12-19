@@ -6,9 +6,9 @@ import { refreshToken } from "../controllers/auth/auth_user/refreshToken.js";
 
 const authRouter = express.Router();
 
-authRouter.post('/api/auth/login', login);
-authRouter.put('/api/auth/register', register);
-authRouter.delete('/api/auth/logout', logout);
-authRouter.put('/api/auth/refresh', refreshToken);
+authRouter.post('/login', login);
+authRouter.put('/register', register);
+authRouter.delete('/logout', logout);
+authRouter.put('/refresh', refreshToken);
 
 export default authRouter;
