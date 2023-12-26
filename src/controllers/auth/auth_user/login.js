@@ -29,7 +29,7 @@ export const login = async (req, res) => {
                ? config.REFRESH_TOKEN_SECRET_SUPER_ADMIN
                : config.REFRESH_TOKEN_SECRET_ADMIN;
 
-            const accessToken = sign({
+            const access_token = sign({
                userId: getUserByUsernameAndPassword.uuid
             }, accessTokenSecret, {
                // TODO Uncomment When Production
@@ -58,8 +58,8 @@ export const login = async (req, res) => {
                   username: getUserByUsernameAndPassword.username,
                   email: getUserByUsernameAndPassword.email,
                   role: getUserByUsernameAndPassword.role,
-                  refreshToken: refresh_token,
-                  accessToken: accessToken
+                  access_token: access_token,
+                  refresh_token: refresh_token
                }
             });
          }

@@ -1,6 +1,6 @@
-import bycrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import { PrismaClient } from '@prisma/client';
-import { validateUsername } from '../../../utils/validation.js'
+import { validateUsername } from '../../../utils/validation.js';
 
 export const register = async (req, res) => {
    try {
@@ -11,36 +11,36 @@ export const register = async (req, res) => {
 
       if (!checkUsername) {
          return res.status(403).send({
+            status: 403,
             message: `Invalid Username (No Spaces And All Lowercase)`,
          });
       }
 
-      if (checkUsername === null || email === null) {
-         return res.status(500).send({
-            message: 'An Error Has Occured'
+      if (!username || !email || !password || !phone || !address) {
+         return res.status(400).send({
+            status: 400,
+            message: 'All fields (username, email, password, phone, address) are required.',
          });
       }
 
-      // Check If Theres User With Given Username
       const getUserByUsername = await prisma.user.findFirst({
          where: {
-            username
+            username,
          },
       });
 
-      // If No Then Good To Go
-      if (getUserByUsername === null) {
-         const hashedPassword = bycrypt.hashSync(password, 10);
+      if (!getUserByUsername) {
+         const hashedPassword = bcrypt.hashSync(password, 10);
 
          await prisma.user.create({
             data: {
-               role: role,
-               email: email,
-               username: username,
-               phone: phone,
-               address: address,
+               role,
+               email,
+               username,
+               phone,
+               address,
                password: hashedPassword,
-            }
+            },
          });
 
          return res.status(201).send({
@@ -50,12 +50,14 @@ export const register = async (req, res) => {
       }
 
       return res.status(409).send({
-         message: 'Username Already Exist',
+         status: 409,
+         message: 'Username Already Exists',
       });
    } catch (error) {
       console.log(error);
       return res.status(500).send({
-         message: 'An Error Has Occured'
+         status: 500,
+         message: 'An Error Has Occurred',
       });
    }
-}
+};
