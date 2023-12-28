@@ -65,6 +65,7 @@ export const login = async (req, res) => {
          }
 
          return res.status(404).send({
+            status: 404,
             message: 'No User Found With Given Username / Password',
          });
       }
@@ -75,6 +76,7 @@ export const login = async (req, res) => {
    } catch (error) {
       console.log(error);
       return res.status(500).send({
+         status: 500,
          message: 'An Error Has Occurred'
       });
    }
