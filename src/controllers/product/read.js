@@ -19,7 +19,10 @@ export const getProductById = async (req, res) => {
    });
 
    if (!product) {
-      return res.status(404).json({ error: 'Product not found' });
+      return res.status(404).json({
+         status: 404,
+         message: "Product Not Found"
+      });
    }
 
    res.status(200).send({

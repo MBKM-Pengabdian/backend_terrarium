@@ -1,6 +1,7 @@
 import cors from 'cors';
 import express from 'express';
 import config from './src/config/app.js';
+import multer from 'multer';
 import authRouter from './src/routes/authUser.js';
 import authCustomerRouter from './src/routes/authCustomer.js';
 import productRouter from './src/routes/product.js';
@@ -11,8 +12,12 @@ import BannerRouter from './src/routes/banner.js';
 
 const app = express();
 
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Use multer for handling form data
+
 
 app.use('/api/auth/user', authRouter);
 app.use('/api/auth/customer', authCustomerRouter);

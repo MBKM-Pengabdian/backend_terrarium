@@ -1,26 +1,121 @@
 import { PrismaClient } from '@prisma/client';
+import fs from 'fs';
+import path from 'path';
+import multer from 'multer';
+import sharp from 'sharp';
+import { v4 as uuidv4 } from 'uuid';
+import config from '../../config/app.js';
+
 const prisma = new PrismaClient();
 
-// Update a product
+const storage = multer.diskStorage({
+   destination: function (req, file, cb) {
+      cb(null, config.IMG_UPLOAD_DIR);
+   },
+   filename: function (req, file, cb) {
+      cb(null, uuidv4() + path.extname(file.originalname));
+   },
+});
+
+const upload = multer({
+   storage,
+   fileFilter: function (req, file, cb) {
+      const ext = path.extname(file.originalname);
+      const allowedExt = ['.png', '.jpg', '.jpeg'];
+      if (!allowedExt.includes(ext.toLowerCase())) {
+         return cb("message: Invalid Image");
+      } else {
+         cb(null, true);
+      }
+   },
+}).single('product_image');
+
 export const updateProduct = async (req, res) => {
-   const { productId } = req.params;
-   const { user_id, product_name, product_image, description, price, stock_quantity } = req.body;
+   try {
+      // Apply the Multer middleware here
+      upload(req, res, async function (err) {
+         if (err) {
+            return res.status(400).send({
+               status: 400,
+               message: err.message || "Invalid Image",
+            });
+         }
 
-   const updatedProduct = await prisma.product.update({
-      where: { uuid: productId },
-      data: {
-         user_id,
-         product_name,
-         product_image,
-         description,
-         price,
-         stock_quantity,
-      },
-   });
+         const { productId } = req.params;
+         const { user_id, product_name, description, price, stock_quantity } = req.body;
+         const parsedPrice = parseFloat(price);
+         const parsedStockQuantity = parseInt(stock_quantity);
 
-   res.status(200).send({
-      status: 200,
-      message: "Updated",
-      data: updatedProduct
-   });
+         // Validate input data
+         if (!productId || !user_id || !product_name || isNaN(parsedPrice) || isNaN(parsedStockQuantity)) {
+            return res.status(400).send({
+               status: 400,
+               message: "productId, User id, Product Name, Price, and Stock Quantity are required fields.",
+            });
+         }
+
+         const existingProduct = await prisma.product.findFirst({
+            where: { uuid: productId },
+         });
+
+         if (!existingProduct) {
+            return res.status(404).send({
+               status: 404,
+               message: "Product not found",
+            });
+         }
+
+         let updatedProduct;
+
+         const size = (await fs.promises.stat(req.file.path)
+            .then((respond) => respond.size)
+            .catch((error) => -1));
+
+         let sizeAcceptedInPercent = Math.floor((size - (size - (config.IMG_LIMIT_SIZE / 2))) / (size / 100));
+
+         // Ensure that sizeAcceptedInPercent is within the valid range (1 to 100)
+         sizeAcceptedInPercent = Math.min(100, Math.max(1, sizeAcceptedInPercent));
+
+         await sharp(req.file.path)
+            .jpeg({ quality: sizeAcceptedInPercent })
+            .toFile(`${config.IMG_UPLOAD_DIR}/compress-${req.file.filename}`)
+            .then(async () => {
+               updatedProduct = await prisma.Product.update({
+                  where: { uuid: productId },
+                  data: {
+                     user_id,
+                     product_name,
+                     product_image: `/images/compress-${req.file.filename}`,
+                     description,
+                     price: parsedPrice,
+                     stock_quantity: parsedStockQuantity,
+                  },
+               });
+
+               res.status(200).send({
+                  status: 200,
+                  message: "Updated",
+                  data: updatedProduct,
+               });
+
+               fs.promises.unlink(req.file.path)
+                  .then(() => null)
+                  .catch((err) => console.error('Error deleting original file:', err));
+            })
+            .catch((err) => {
+               console.error(err);
+               return res.status(500).send({
+                  status: 500,
+                  message: "An error occurred while updating the product image.",
+               });
+            });
+      });
+
+   } catch (error) {
+      console.error("Error updating product:", error);
+      res.status(500).send({
+         status: 500,
+         message: "An error occurred while updating the product.",
+      });
+   }
 };
