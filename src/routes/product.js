@@ -7,8 +7,8 @@ import { getAllProduct, getProductById } from "../controllers/product/read.js";
 
 const productRouter = express.Router();
 
-productRouter.get('/get', checkJWTAdmin, checkJWTSuperAdmin, getAllProduct);
-productRouter.get('/get/:productId', checkJWTAdmin, checkJWTSuperAdmin, getProductById)
+productRouter.get('/get', getAllProduct);
+productRouter.get('/get/:productId', getProductById)
 productRouter.post('/store', checkJWTAdmin, checkJWTSuperAdmin, upload.single('product_image'), createProduct);
 productRouter.put('/update/:productId', checkJWTAdmin, checkJWTSuperAdmin, updateProduct);
 productRouter.delete('/delete/:productId', checkJWTAdmin, checkJWTSuperAdmin, deleteProduct)
