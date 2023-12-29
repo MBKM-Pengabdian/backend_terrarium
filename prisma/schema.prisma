@@ -68,7 +68,7 @@ model Order {
 model Product {
    uuid           String       @id @default(uuid())
    product_name   String
-   product_image  String
+   product_image  String?
    description    String
    price          Float
    stock_quantity Int
