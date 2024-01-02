@@ -7,8 +7,8 @@ import { getAllEvent, geteventById } from "../controllers/event/read.js";
 
 const EventRouter = express.Router();
 
-EventRouter.get('/get', checkJWTAdmin, checkJWTSuperAdmin, getAllEvent);
-EventRouter.get('/get/:eventId', checkJWTAdmin, checkJWTSuperAdmin, geteventById)
+EventRouter.get('/get', getAllEvent);
+EventRouter.get('/get/:eventId', geteventById)
 EventRouter.post('/store', checkJWTAdmin, checkJWTSuperAdmin, createEvent);
 EventRouter.put('/update/:eventId', checkJWTAdmin, checkJWTSuperAdmin, updateEvent);
 EventRouter.delete('/delete/:eventId', checkJWTAdmin, checkJWTSuperAdmin, deleteEvent)
