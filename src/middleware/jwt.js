@@ -78,3 +78,42 @@ export const checkJWTAdmin = async (req, res, next) => {
       });
    }
 }
+
+export const checkJWTCustomer = async (req, res, next) => {
+   try {
+      const bearerHeader = req.headers["authorization"];
+      if (bearerHeader === undefined) {
+         throw Error();
+      }
+
+      const token = bearerHeader.split(' ')[1];
+
+      const verifyToken = (token, secret) => {
+         try {
+            return verify(token, secret);
+         } catch (error) {
+            if (error instanceof TokenExpiredError) {
+               throw {
+                  status: 401,
+                  message: 'EXPIRED_TOKEN',
+               };
+            }
+            throw {
+               status: 401,
+               message: 'INVALID_TOKEN',
+            };
+         }
+      };
+
+      const payload = verifyToken(token, config.ACCESS_TOKEN_SECRET_CUSTOMER);
+
+      res.locals.payload = payload;
+      next();
+   } catch (error) {
+      console.error(error);
+      return res.status(error.status || 401).send({
+         status: error.status || 401,
+         message: error.message || 'Unauthorized',
+      });
+   }
+}

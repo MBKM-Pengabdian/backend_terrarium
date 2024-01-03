@@ -51,8 +51,8 @@ export const login = async (req, res) => {
                   customerId: getUserByUsernameAndPassword.uuid,
                   username: getUserByUsernameAndPassword.username,
                   email: getUserByUsernameAndPassword.email,
-                  refreshToken: refresh_token,
-                  accessToken: accessToken
+                  access_token: accessToken,
+                  refresh_token: refresh_token
                }
             });
          }

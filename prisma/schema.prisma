@@ -43,16 +43,17 @@ model User {
 }
 
 model Customer {
-   uuid       String         @id @default(uuid())
-   username   String
-   email      String         @unique
-   password   String
-   phone      String
-   address    String
-   created_at DateTime       @default(now())
-   order      Order[]
-   riview     Riview[]
-   jwt        Jwt_Customer[]
+   uuid           String           @id @default(uuid())
+   username       String
+   email          String           @unique
+   password       String
+   phone          String
+   address        String
+   created_at     DateTime         @default(now())
+   order          Order[]
+   riview         Riview[]
+   jwt            Jwt_Customer[]
+   Register_Event Register_Event[]
 }
 
 model Order {
@@ -114,15 +115,18 @@ model Banner {
 }
 
 model Event {
-   uuid         String         @id @default(uuid())
-   user_id      String
-   img_event    String
-   title_event  String
-   price_event  String
-   status       Int
-   created_at   DateTime       @default(now())
-   user         User           @relation(fields: [user_id], references: [uuid], onDelete: Cascade)
-   detail_event Detail_Event[]
+   uuid           String           @id @default(uuid())
+   user_id        String
+   img_event      String
+   title_event    String
+   price_event    String
+   contact_person String
+   place          String
+   status         Int
+   created_at     DateTime         @default(now())
+   user           User             @relation(fields: [user_id], references: [uuid], onDelete: Cascade)
+   detail_event   Detail_Event[]
+   Register_Event Register_Event[]
 }
 
 model Detail_Event {
@@ -149,4 +153,18 @@ model Timeline {
    title           String
    created_at      DateTime     @default(now())
    detail_event    Detail_Event @relation(fields: [detail_event_id], references: [id], onDelete: Cascade)
+}
+
+model Register_Event {
+   uuid               String   @id @default(uuid())
+   customer_id        String
+   event_id           String
+   email_customer     String
+   fullname_customer  String
+   customer           Customer @relation(fields: [customer_id], references: [uuid])
+   event              Event    @relation(fields: [event_id], references: [uuid])
+   created_at         DateTime @default(now())
+   token_registration String   @default(uuid())
+
+   @@unique([customer_id, event_id])
 }

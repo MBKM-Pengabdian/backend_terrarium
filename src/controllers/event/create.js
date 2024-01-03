@@ -16,7 +16,9 @@ export const createEvent = async (req, res) => {
             title_event,
             price_event,
             status,
-            detailEvent
+            detailEvent,
+            contact_person,
+            place
         } = req.body;
 
         //create event table
@@ -28,6 +30,8 @@ export const createEvent = async (req, res) => {
                 title_event,
                 price_event,
                 status,
+                contact_person,
+                place
             },
         });
 
