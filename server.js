@@ -15,11 +15,14 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static('public'));
+app.use('/images', express.static('images'))
 app.use(express.urlencoded({ extended: true }));
 
-// Use multer for handling form data
 
-
+/**
+ * Router
+ */
 app.use('/api/auth/user', authRouter);
 app.use('/api/auth/customer', authCustomerRouter);
 app.use('/api/user', userRouter)
