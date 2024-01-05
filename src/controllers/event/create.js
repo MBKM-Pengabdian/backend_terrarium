@@ -1,75 +1,187 @@
-import {
-    PrismaClient
-} from '@prisma/client';
-import {
-    v4 as uuidv4
-} from 'uuid'
+import { PrismaClient } from '@prisma/client';
+import { v4 as uuidv4 } from 'uuid';
+import multer from 'multer';
+import path from 'path';
+import sharp from 'sharp';
+import fs from 'fs/promises';
+import config from '../../config/app.js';
 
 const prisma = new PrismaClient();
 
-// Create a event
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, config.IMG_UPLOAD_DIR);
+    },
+    filename: (req, file, cb) => {
+        cb(null, uuidv4() + path.extname(file.originalname));
+    },
+});
+
+export const upload = multer({
+    storage,
+    fileFilter: (req, file, cb) => {
+        if (!file) {
+            return cb(null, true);
+        }
+
+        const ext = path.extname(file.originalname);
+        const allowedExt = ['.png', '.jpg', '.jpeg'];
+
+        if (!allowedExt.includes(ext.toLowerCase())) {
+            return cb("message : Invalid Image");
+        } else {
+            cb(null, true);
+        }
+    },
+}).fields([
+    { name: 'img_event', maxCount: 1 },
+    { name: 'banner_event', maxCount: 1 }
+])
+
+const compressImage = async (filePath, fileSizeLimit) => {
+    try {
+        if (!filePath) {
+            throw new Error('File path is undefined.');
+        }
+
+        // Read the entire file into memory
+        const fileBuffer = await fs.readFile(filePath);
+
+        // Get the size of the file buffer
+        const size = fileBuffer.length;
+
+        if (size > fileSizeLimit) {
+            const sizeAcceptedInPercent = Math.floor(((size - (fileSizeLimit / 2)) / size) * 100);
+
+            await sharp(fileBuffer)
+                .jpeg({ quality: sizeAcceptedInPercent })
+                .toFile(`${config.IMG_UPLOAD_DIR}/compress-${path.basename(filePath)}`);
+
+            return `/images/compress-${path.basename(filePath)}`;
+        }
+    } catch (error) {
+        console.error(error);
+    }
+
+    return null;
+};
+
+
+
+const createTimelineEvents = async (timeline, detailEventId) => {
+    try {
+        if (!Array.isArray(timeline)) {
+            throw new Error('Timeline should be an array.');
+        }
+
+        const createTimelinePromises = timeline.map((time) =>
+            prisma.Timeline.create({
+                data: {
+                    detail_event_id: detailEventId,
+                    title: time.title,
+                    waktu: time.waktu,
+                },
+            })
+        );
+
+        const createdTimelineEvents = await Promise.all(createTimelinePromises);
+
+        return createdTimelineEvents;
+    } catch (error) {
+        console.error(error);
+    }
+
+    return [];
+};
+
+
 export const createEvent = async (req, res) => {
     try {
         const {
             user_id,
-            img_event,
             title_event,
             price_event,
             status,
-            detailEvent,
+            description_event,
+            sponsor_event,
+            speaker_event,
+            tag_event,
+            date_event,
+            last_regist_event,
+            kuota_event,
+            sisa_event,
+            timeline,
             contact_person,
-            place
+            place,
         } = req.body;
 
-        //create event table
+        const parsedStatus = parseInt(status);
+
+        let imgEventFileUrl = null;
+        let bannerEventFileUrl = null;
+
+        if (req.files['img_event']) {
+            imgEventFileUrl = `/images/${req.files['img_event'][0].filename}`;
+            const compressedImgEventUrl = await compressImage(req.files['img_event'][0].path, config.IMG_LIMIT_SIZE);
+            imgEventFileUrl = compressedImgEventUrl || imgEventFileUrl;
+        }
+
+        if (req.files['banner_event']) {
+            bannerEventFileUrl = `/images/${req.files['banner_event'][0].filename}`;
+            const compressedBannerEventUrl = await compressImage(req.files['banner_event'][0].path, config.IMG_LIMIT_SIZE);
+            bannerEventFileUrl = compressedBannerEventUrl || bannerEventFileUrl;
+        }
+
         const newEvent = await prisma.Event.create({
             data: {
-                uuid: uuidv4(),
                 user_id,
-                img_event,
+                uuid: uuidv4(),
+                img_event: imgEventFileUrl,
                 title_event,
                 price_event,
-                status,
+                status: parsedStatus,
                 contact_person,
-                place
+                place,
             },
         });
 
-        //create detail event table
-        detailEvent.forEach(async detail => {
-            const newDetail = await prisma.Detail_Event.create({
-                data: {
-                    event_id: newEvent.uuid,
-                    description_event: detail.description_event,
-                    sponsor_event: detail.sponsor_event,
-                    speaker_event: detail.speaker_event,
-                    banner_event: detail.banner_event,
-                    tag_event: detail.tag_event,
-                    date_event: detail.date_event,
-                    last_regist_event: detail.last_regist_event,
-                    kuota_event: detail.kuota_event,
-                    sisa_event: detail.sisa_event,
-                }
-            })
+        const parsedKuotaEvent = parseInt(kuota_event);
+        const parsedSisaEvent = parseInt(sisa_event);
 
-            //create timeline event table
-            detail.timeline.forEach(async time => {
-                await prisma.Timeline.create({
-                    data: {
-                        detail_event_id: newDetail.id,
-                        title: time.title,
-                        waktu: time.waktu,
-                    }
-                })
-            });
-        })
+        const newDetailEvent = await prisma.Detail_Event.create({
+            data: {
+                event: { connect: { uuid: newEvent.uuid } },
+                description_event,
+                sponsor_event,
+                speaker_event,
+                banner_event: bannerEventFileUrl,
+                tag_event,
+                date_event,
+                last_regist_event,
+                kuota_event: parsedKuotaEvent,
+                sisa_event: parsedSisaEvent,
+            },
+        });
 
-        res.status(201).send({
+        const createdTimelineEvents = await createTimelineEvents(timeline, newDetailEvent.id);
+
+        res.status(201).json({
             status: 201,
             message: "Created",
-            data: newEvent
+            data: {
+                event: newEvent,
+                detail_event: {
+                    ...newDetailEvent,
+                    timeline_event: createdTimelineEvents
+                },
+            },
         });
+
     } catch (error) {
         console.error(error);
+        res.status(500).json({
+            status: 500,
+            message: "Internal Server Error",
+        });
     }
-}
+};
