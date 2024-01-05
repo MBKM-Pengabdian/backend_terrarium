@@ -7,6 +7,20 @@ export const registerEvent = async (req, res) => {
    try {
       const { customer_id, event_id, email_customer, fullname_customer } = req.body;
 
+      const existingRegistration = await prisma.register_Event.findFirst({
+         where: {
+            customer_id,
+            event_id,
+         },
+      });
+
+      if (existingRegistration) {
+         return res.status(400).json({
+            status: 400,
+            message: 'Customer is already registered for the event',
+         });
+      }
+
       const generated_uuid = uuidv4();
       const split_uuid = generated_uuid.match(/.{1,4}/g);
       const token_uuid = split_uuid[0].toUpperCase();
@@ -32,3 +46,4 @@ export const registerEvent = async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
    }
 };
+
