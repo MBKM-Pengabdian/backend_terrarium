@@ -169,11 +169,13 @@ export const createEvent = async (req, res) => {
             status: 201,
             message: "Created",
             data: {
-                event: newEvent,
-                detail_event: {
-                    ...newDetailEvent,
-                    timeline_event: createdTimelineEvents
-                },
+                event: {
+                    ...newEvent,
+                    detail_event: {
+                        ...newDetailEvent,
+                        timeline_event: createdTimelineEvents
+                    },
+                }
             },
         });
 
