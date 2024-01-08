@@ -122,7 +122,7 @@ model Event {
    price_event    String
    contact_person String
    place          String
-   status         Int
+   status         Boolean
    created_at     DateTime         @default(now())
    user           User             @relation(fields: [user_id], references: [uuid], onDelete: Cascade)
    detail_event   Detail_Event[]
@@ -140,7 +140,6 @@ model Detail_Event {
    date_event        String
    last_regist_event String
    kuota_event       Int
-   sisa_event        Int
    created_at        DateTime   @default(now())
    event             Event      @relation(fields: [event_id], references: [uuid], onDelete: Cascade)
    timeline          Timeline[]
