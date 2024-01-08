@@ -109,13 +109,10 @@ export const createEvent = async (req, res) => {
             date_event,
             last_regist_event,
             kuota_event,
-            sisa_event,
             timeline,
             contact_person,
             place,
         } = req.body;
-
-        const parsedStatus = parseInt(status);
 
         let imgEventFileUrl = null;
         let bannerEventFileUrl = null;
@@ -139,14 +136,13 @@ export const createEvent = async (req, res) => {
                 img_event: imgEventFileUrl,
                 title_event,
                 price_event,
-                status: parsedStatus,
+                status: (status === 'true'),
                 contact_person,
                 place,
             },
         });
 
         const parsedKuotaEvent = parseInt(kuota_event);
-        const parsedSisaEvent = parseInt(sisa_event);
 
         const newDetailEvent = await prisma.Detail_Event.create({
             data: {
@@ -159,7 +155,6 @@ export const createEvent = async (req, res) => {
                 date_event,
                 last_regist_event,
                 kuota_event: parsedKuotaEvent,
-                sisa_event: parsedSisaEvent,
             },
         });
 
