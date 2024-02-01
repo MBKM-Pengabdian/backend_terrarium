@@ -1,9 +1,9 @@
 import express from "express";
 import { checkJWTAdmin, checkJWTSuperAdmin } from "../middleware/jwt.js";
-import { createProduct, upload } from "../controllers/product/create.js";
-import { updateProduct } from "../controllers/product/update.js";
-import { deleteProduct } from "../controllers/product/delete.js";
-import { getAllProduct, getProductById } from "../controllers/product/read.js";
+import { createProduct, upload } from "../controllers/product/crud_product/create.js";
+import { updateProduct } from "../controllers/product/crud_product/update.js";
+import { deleteProduct } from "../controllers/product/crud_product/delete.js";
+import { getAllProduct, getProductById } from "../controllers/product/crud_product/read.js";
 
 const productRouter = express.Router();
 
