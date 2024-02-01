@@ -54,6 +54,7 @@ model Customer {
    riview         Review[]
    jwt            Jwt_Customer[]
    Register_Event Register_Event[]
+   Cart           Cart[]
 }
 
 model Order {
@@ -78,6 +79,7 @@ model Product {
    user           User         @relation(fields: [user_id], references: [uuid])
    riview         Review[]
    order_item     Order_Item[]
+   Cart           Cart[]
 }
 
 model Review {
@@ -167,4 +169,14 @@ model Register_Event {
    token_registration String   @default(uuid())
 
    @@unique([customer_id, event_id])
+}
+
+model Cart {
+   uuid        String   @id @default(uuid())
+   customer_id String
+   product_id  String
+   quantity    Int
+   created_at  DateTime @default(now())
+   product     Product  @relation(fields: [product_id], references: [uuid], onDelete: Cascade)
+   customer    Customer @relation(fields: [customer_id], references: [uuid], onDelete: Cascade)
 }
