@@ -84,8 +84,9 @@ model Riview {
    uuid        String   @id @default(uuid())
    product_id  String
    customer_id String
-   rating      String
+   rating      Int
    comment     String
+   img_review  String
    created_at  DateTime @default(now())
    product     Product  @relation(fields: [product_id], references: [uuid], onDelete: Cascade)
    customer    Customer @relation(fields: [customer_id], references: [uuid], onDelete: Cascade)

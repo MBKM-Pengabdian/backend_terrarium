@@ -4,7 +4,7 @@ import path from 'path';
 import multer from 'multer';
 import sharp from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
-import config from '../../config/app.js';
+import config from '../../../config/app.js';
 
 const prisma = new PrismaClient();
 
