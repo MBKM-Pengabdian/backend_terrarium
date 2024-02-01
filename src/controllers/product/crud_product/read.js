@@ -25,7 +25,7 @@ export const getProductById = async (req, res) => {
          where: { uuid: productId },
       });
 
-      const reviews = await prisma.riview.findMany({
+      const reviews = await prisma.review.findMany({
          where: { product_id: productId },
       });
 

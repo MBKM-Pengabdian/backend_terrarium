@@ -7,7 +7,7 @@ export const createReview = async (req, res) => {
    try {
       const { product_id, customer_id, rating, comment, img_review } = req.body;
 
-      const newReview = await prisma.riview.create({
+      const newReview = await prisma.review.create({
          data: {
             product_id,
             customer_id,

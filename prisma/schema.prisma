@@ -51,7 +51,7 @@ model Customer {
    address        String
    created_at     DateTime         @default(now())
    order          Order[]
-   riview         Riview[]
+   riview         Review[]
    jwt            Jwt_Customer[]
    Register_Event Register_Event[]
 }
@@ -76,11 +76,11 @@ model Product {
    created_at     DateTime     @default(now())
    user_id        String
    user           User         @relation(fields: [user_id], references: [uuid])
-   riview         Riview[]
+   riview         Review[]
    order_item     Order_Item[]
 }
 
-model Riview {
+model Review {
    uuid        String   @id @default(uuid())
    product_id  String
    customer_id String
