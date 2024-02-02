@@ -12,6 +12,7 @@ import RegisterEventRouter from './src/routes/register-event.js';
 import BannerRouter from './src/routes/banner.js';
 import reviewProductRouter from './src/routes/review-product.js';
 import cartRouter from './src/routes/cart.js';
+import paymentRouter from './src/routes/payment.js';
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use('/api/event', EventRouter)
 app.use('/api/event', RegisterEventRouter)
 app.use('/api/banner', BannerRouter)
 app.use('/api/cart', cartRouter)
+app.use('/api/', paymentRouter)
 
 app.listen(config.APP_PORT, () => {
    console.log(`Server Activated On Port ${config.APP_PORT}`);

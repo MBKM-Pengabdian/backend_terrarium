@@ -55,6 +55,7 @@ model Customer {
    jwt            Jwt_Customer[]
    Register_Event Register_Event[]
    Cart           Cart[]
+   Payment        Payment[]
 }
 
 model Order {
@@ -80,6 +81,7 @@ model Product {
    riview         Review[]
    order_item     Order_Item[]
    Cart           Cart[]
+   Payment        Payment[]
 }
 
 model Review {
@@ -179,4 +181,19 @@ model Cart {
    created_at  DateTime @default(now())
    product     Product  @relation(fields: [product_id], references: [uuid], onDelete: Cascade)
    customer    Customer @relation(fields: [customer_id], references: [uuid], onDelete: Cascade)
+}
+
+model Payment {
+   uuid              String   @id @default(uuid())
+   customer_id       String
+   product_id        String
+   quantity          Int
+   total_harga       Int
+   customer_email    String   @db.VarChar(255)
+   snap_token        String?  @db.VarChar(255)
+   snap_redirect_url String?  @db.VarChar(255)
+   payment_method    String?  @db.VarChar(110)
+   created_at        DateTime @default(now())
+   product           Product  @relation(fields: [product_id], references: [uuid], onDelete: Cascade)
+   customer          Customer @relation(fields: [customer_id], references: [uuid], onDelete: Cascade)
 }
