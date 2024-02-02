@@ -16,6 +16,10 @@ const config = {
 
    IMG_LIMIT_SIZE: (1 * 1024 * 1024),
    IMG_UPLOAD_DIR: 'public/images',
+
+   // midtrans
+   CLIENT_KEY: process.env.CLIENT_KEY,
+   SERVER_KEY: process.env.SERVER_KEY
 }
 
 export default config;
