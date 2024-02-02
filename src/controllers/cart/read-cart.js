@@ -11,6 +11,9 @@ export const getAllCart = async (req, res) => {
          where: {
             customer_id,
          },
+         include: {
+            product: true
+         }
       });
       res.json({
          status: 200,
