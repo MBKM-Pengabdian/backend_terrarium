@@ -13,7 +13,7 @@ export const paymentMidtrans = async (req, res) => {
          email,
          phone,
          address,
-         price,
+         harga_barang,
          quantity,
          product_id,
          customer_id,
@@ -30,7 +30,7 @@ export const paymentMidtrans = async (req, res) => {
          isProduction: false,
       });
 
-      const total_harga_product = quantity * price
+      const total_harga_product = quantity * harga_barang
 
       let parameter = {
          "transaction_details": {
@@ -40,7 +40,7 @@ export const paymentMidtrans = async (req, res) => {
          "item_details": [{
             "id": product_id,
             "name": "tes",
-            "price": price,
+            "price": harga_barang,
             "quantity": quantity,
          }],
          "customer_details": {
@@ -67,6 +67,7 @@ export const paymentMidtrans = async (req, res) => {
             customer_id: customer_id,
             product_id: product_id,
             quantity: quantity,
+            harga_barang: harga_barang,
             total_harga: total_harga_product,
             customer_email: email,
             snap_token: transactionToken,
@@ -80,7 +81,7 @@ export const paymentMidtrans = async (req, res) => {
             status: 201,
             message: "Success",
             data_payment: {
-               savedPayment
+               ...savedPayment
             }
          }
       );
