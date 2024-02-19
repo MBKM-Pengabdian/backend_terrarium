@@ -6,7 +6,7 @@ import { getAllSpecialReq } from "../controllers/special_request/read.js";
 const specialRequestRoute = express.Router();
 
 specialRequestRoute.get('/get', checkJWTAdmin, checkJWTSuperAdmin, getAllSpecialReq);
-specialRequestRoute.post('/store', checkJWTCustomer, createSpecialRequest);
+specialRequestRoute.post('/store', createSpecialRequest);
 
 
 export default specialRequestRoute;
