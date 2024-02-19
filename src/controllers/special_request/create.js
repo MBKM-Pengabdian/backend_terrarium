@@ -7,11 +7,10 @@ const prisma = new PrismaClient();
 export const createSpecialRequest = async (req, res) => {
    const {
       fullname,
-      customer_id,
       phone_number,
       email,
       customer_city,
-      cutomer_address,
+      customer_address,
       service_type,
       description,
       deadline,
@@ -24,11 +23,10 @@ export const createSpecialRequest = async (req, res) => {
       const newSpecialRequest = await prisma.special_Request.create({
          data: {
             fullname,
-            customer_id,
             phone_number,
             email,
             customer_city,
-            cutomer_address,
+            customer_address,
             service_type,
             description,
             deadline: dateFormat(deadline),
@@ -40,12 +38,11 @@ export const createSpecialRequest = async (req, res) => {
 
       const response = {
          'customer-data': {
-            customer_id,
             fullname,
             phone_number,
             email,
             customer_city,
-            cutomer_address,
+            customer_address,
          },
          'special-request': {
             service_type,
