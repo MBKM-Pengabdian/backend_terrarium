@@ -43,19 +43,20 @@ model User {
 }
 
 model Customer {
-   uuid           String           @id @default(uuid())
-   username       String
-   email          String           @unique
-   password       String
-   phone          String
-   address        String
-   created_at     DateTime         @default(now())
-   order          Order[]
-   riview         Review[]
-   jwt            Jwt_Customer[]
-   Register_Event Register_Event[]
-   Cart           Cart[]
-   Payment        Payment[]
+   uuid            String            @id @default(uuid())
+   username        String
+   email           String            @unique
+   password        String
+   phone           String
+   address         String
+   created_at      DateTime          @default(now())
+   order           Order[]
+   riview          Review[]
+   jwt             Jwt_Customer[]
+   Register_Event  Register_Event[]
+   Cart            Cart[]
+   Payment         Payment[]
+   Special_Request Special_Request[]
 }
 
 model Order {
@@ -195,5 +196,23 @@ model Payment {
    snap_redirect_url String?  @db.VarChar(255)
    created_at        DateTime @default(now())
    product           Product  @relation(fields: [product_id], references: [uuid], onDelete: Cascade)
+   customer          Customer @relation(fields: [customer_id], references: [uuid], onDelete: Cascade)
+}
+
+model Special_Request {
+   uuid              String   @id @default(uuid())
+   customer_id       String
+   fullname          String
+   phone_number      String
+   email             String   @unique
+   customer_city     String
+   cutomer_address   String?
+   service_type      String[]
+   description       String
+   deadline          DateTime @default(now())
+   budget_estimation Int
+   project_location  String
+   photo             String?
+   created_at        DateTime @default(now())
    customer          Customer @relation(fields: [customer_id], references: [uuid], onDelete: Cascade)
 }
