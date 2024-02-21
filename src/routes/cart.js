@@ -12,7 +12,7 @@ cartRouter.post('/store', checkJWTCustomer, storeCart);
 cartRouter.delete('/delete/:uuid', checkJWTCustomer, deleteCart);
 
 // cart count 
-cartRouter.post('/increase/:cartId', increaseQuantity)
-cartRouter.post('/decrease/:cartId', decreaseQuantity)
+cartRouter.post('/increase/:cartId', checkJWTCustomer, increaseQuantity)
+cartRouter.post('/decrease/:cartId', checkJWTCustomer, decreaseQuantity)
 
 export default cartRouter;
