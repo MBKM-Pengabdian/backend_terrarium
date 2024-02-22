@@ -202,12 +202,12 @@ model Special_Request {
    uuid              String   @id @default(uuid())
    fullname          String
    phone_number      String
-   email             String   @unique
+   email             String
    customer_city     String
    customer_address  String?
    service_type      String
    description       String
-   deadline          DateTime @default(now())
+   start_project     DateTime @default(now())
    budget_estimation Int
    project_location  String
    photo             String?
