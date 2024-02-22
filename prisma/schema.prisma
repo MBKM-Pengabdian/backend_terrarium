@@ -199,17 +199,17 @@ model Payment {
 }
 
 model Special_Request {
-   uuid              String   @id @default(uuid())
+   uuid              String    @id @default(uuid())
    fullname          String
    phone_number      String
-   email             String
+   email             String?
    customer_city     String
    customer_address  String?
    service_type      String
    description       String
-   start_project     DateTime @default(now())
-   budget_estimation Int
-   project_location  String
+   start_project     DateTime? @default(now())
+   budget_estimation Int?
+   project_location  String?
    photo             String?
-   created_at        DateTime @default(now())
+   created_at        DateTime  @default(now())
 }
