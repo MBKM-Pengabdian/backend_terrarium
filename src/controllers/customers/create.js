@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 // Create a customer
 export const createCustomer = async (req, res) => {
    try {
-      const { first_name, last_name, email, password, phone, address } = req.body;
+      const { username, email, password, phone, address } = req.body;
 
       // Hash the password
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -15,12 +15,11 @@ export const createCustomer = async (req, res) => {
       const newCustomer = await prisma.customer.create({
          data: {
             uuid: uuidv4(),
-            first_name,
-            last_name,
             email,
-            password: hashedPassword,
+            username,
             phone,
             address,
+            password: hashedPassword,
          },
       });
 
