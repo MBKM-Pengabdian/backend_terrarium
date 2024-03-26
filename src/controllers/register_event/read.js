@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export const getAllRegistrationEvent = async (req, res) => {
+export const getRegistrationEventUser = async (req, res) => {
    const { uuid_customer } = req.params;
 
    try {
@@ -11,7 +11,11 @@ export const getAllRegistrationEvent = async (req, res) => {
             customer_id: uuid_customer,
          },
          include: {
-            event: true
+            event: {
+               include: {
+                  detail_event: true
+               }
+            }
          },
       });
 
@@ -28,9 +32,14 @@ export const getAllRegistrationEvent = async (req, res) => {
             event_data: {
                event_id: event.uuid,
                token_registration: registration.token_registration,
-               date_event: event.created_at.toISOString(),
                title_event: event.title_event,
                place: event.place,
+               detail_event_data: event.detail_event.map(detailEvent => ({
+                  description_event: detailEvent.description_event,
+                  sponsor_event: detailEvent.sponsor_event,
+                  speaker_event: detailEvent.speaker_event,
+                  date_event: detailEvent.date_event
+               })),
             },
             created_at: registration.created_at.toISOString(),
          };
@@ -46,3 +55,17 @@ export const getAllRegistrationEvent = async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
    }
 };
+
+export const getAllRegistrationEvent = async (req, res) => {
+   try {
+      const register_event = await prisma.register_Event.findMany();
+      res.status(200).send({
+         status: 200,
+         message: "Success",
+         data: register_event
+      });
+   } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+   }
+}

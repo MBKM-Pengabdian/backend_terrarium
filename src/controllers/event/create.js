@@ -5,6 +5,7 @@ import path from 'path';
 import sharp from 'sharp';
 import fs from 'fs/promises';
 import config from '../../config/app.js';
+import { dateFormat } from '../../utils/date-format.js';
 
 const prisma = new PrismaClient();
 
@@ -152,7 +153,7 @@ export const createEvent = async (req, res) => {
                 speaker_event,
                 banner_event: bannerEventFileUrl,
                 tag_event,
-                date_event,
+                date_event: dateFormat(date_event),
                 last_regist_event,
                 kuota_event: parsedKuotaEvent,
             },
