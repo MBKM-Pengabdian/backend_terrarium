@@ -43,19 +43,20 @@ model User {
 }
 
 model Customer {
-   uuid           String           @id @default(uuid())
-   username       String
-   email          String           @unique
-   password       String
-   phone          String
-   address        String
-   created_at     DateTime         @default(now())
-   order          Order[]
-   riview         Review[]
-   jwt            Jwt_Customer[]
-   Register_Event Register_Event[]
-   Cart           Cart[]
-   Payment        Payment[]
+   uuid            String            @id @default(uuid())
+   username        String
+   email           String            @unique
+   password        String
+   phone           String
+   address         String
+   created_at      DateTime          @default(now())
+   order           Order[]
+   riview          Review[]
+   jwt             Jwt_Customer[]
+   Register_Event  Register_Event[]
+   Cart            Cart[]
+   Payment         Payment[]
+   Special_Request Special_Request[]
 }
 
 model Order {
@@ -212,4 +213,6 @@ model Special_Request {
    project_location  String?
    photo             String?
    created_at        DateTime  @default(now())
+   customer_id       String
+   customer          Customer  @relation(fields: [customer_id], references: [uuid], onDelete: Cascade)
 }
