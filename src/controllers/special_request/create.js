@@ -6,6 +6,7 @@ const prisma = new PrismaClient();
 // Controller to handle request creation
 export const createSpecialRequest = async (req, res) => {
    const {
+      customer_id,
       fullname,
       phone_number,
       email,
@@ -22,6 +23,7 @@ export const createSpecialRequest = async (req, res) => {
    try {
       const newSpecialRequest = await prisma.special_Request.create({
          data: {
+            customer_id,
             fullname,
             phone_number,
             email,
