@@ -214,6 +214,7 @@ model Special_Request {
    photo             String?
    created_at        DateTime  @default(now())
    status            Int?      @default(1)
+   alasan            String?
    customer_id       String
    customer          Customer  @relation(fields: [customer_id], references: [uuid], onDelete: Cascade)
 }
