@@ -7,10 +7,10 @@ import { updateStatusSpecialRequest } from "../controllers/special_request/updat
 const specialRequestRoute = express.Router();
 
 specialRequestRoute.get('/get', checkJWTAdmin, checkJWTSuperAdmin, getAllSpecialReq);
-specialRequestRoute.get('/get/:specialReqID',checkJWTCustomer, getSpecialReqById)
+specialRequestRoute.get('/get/:specialReqID', checkJWTAdmin, getSpecialReqById)
 specialRequestRoute.get('/:uuid_customer/get', checkJWTCustomer, getAllSpecialReqFromUuidCustomer);
 specialRequestRoute.post('/store', checkJWTCustomer, createSpecialRequest);
-specialRequestRoute.post('/updateStatus/:specialReqID', checkJWTCustomer, updateStatusSpecialRequest)
+specialRequestRoute.post('/updateStatus/:specialReqID', checkJWTAdmin, updateStatusSpecialRequest)
 
 
 export default specialRequestRoute;
