@@ -6,7 +6,6 @@ const prisma = new PrismaClient();
 export const updateStatusSpecialRequest = async (req, res) => {
    const { specialReqID } = req.params;
    const { status } = req.body
-   console.log(status);
 
    try {
       const specialRequest = await prisma.special_Request.findUnique({

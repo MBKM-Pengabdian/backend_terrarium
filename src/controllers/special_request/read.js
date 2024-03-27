@@ -1,41 +1,59 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 // Retrieve all customers
 export const getAllSpecialReq = async (req, res) => {
-   try {
-      const specialRequest = await prisma.special_Request.findMany();
-      res.status(200).send({
-         status: 200,
-         message: "Success",
-         data: specialRequest
-      });
-   } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
-   }
+  try {
+    const specialRequest = await prisma.special_Request.findMany();
+    res.status(200).send({
+      status: 200,
+      message: "Success",
+      data: specialRequest,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
 
 export const getAllSpecialReqFromUuidCustomer = async (req, res) => {
+  const { uuid_customer } = req.params;
 
-   const { uuid_customer } = req.params
+  try {
+    const specialRequests = await prisma.special_Request.findMany({
+      where: {
+        customer_id: uuid_customer,
+      },
+    });
 
-   try {
+    res.status(200).json({
+      status: 200,
+      message: "OK",
+      data: specialRequests,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
-      const specialRequests = await prisma.special_Request.findMany({
-         where: {
-            customer_id: uuid_customer,
-         },
-      });
+export const getSpecialReqById = async (req, res) => {
+  const { specialReqID } = req.params;
+  const specialRequests = await prisma.special_Request.findUnique({
+    where: {
+      uuid: specialReqID,
+    },
+  });
 
-      res.status(200).json({
-         status: 200,
-         message: 'OK',
-         data: specialRequests,
-      });
+  if (!specialRequests) {
+    return res.status(404).json({
+      error: "Special Request not found",
+    });
+  }
 
-   } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
-   }
-}
+  res.status(200).send({
+    status: 200,
+    message: "OK",
+    data: specialRequests,
+  });
+};
