@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import multer from "multer";
 import path from "path";
 import sharp from "sharp";
@@ -67,13 +67,13 @@ const compressImage = async (filePath, fileSizeLimit) => {
 
 export const uploadBuktiBayarEvent = async (req, res) => {
   const { regisEventID } = req.params;
-  const {foto} = req.body;
+  const { foto } = req.body;
   try {
     let photoBuktiFileUrl = null;
-    if (req.files['photo_bukti']) {
-      photoBuktiFileUrl = `/images/${req.files['photo_bukti'][0].filename}`;
+    if (req.files["photo_bukti"]) {
+      photoBuktiFileUrl = `/images/${req.files["photo_bukti"][0].filename}`;
       const compressedImgEventUrl = await compressImage(
-        req.files['photo_bukti'][0].path,
+        req.files["photo_bukti"][0].path,
         config.IMG_LIMIT_SIZE
       );
       photoBuktiFileUrl = compressedImgEventUrl || photoBuktiFileUrl;
@@ -96,6 +96,37 @@ export const uploadBuktiBayarEvent = async (req, res) => {
       status: 200,
       message: "Photo successfully Upload",
       udpatePhotoBukti,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const updateStatusRegistrationEvent = async (req, res) => {
+  const { regisEventID } = req.params;
+  const { status, alasan } = req.body;
+
+  try {
+    const registrasiEvent = await prisma.register_Event.findUnique({
+      where: { uuid: regisEventID },
+    });
+    console.log(regisEventID);
+    console.log(status);
+    console.log(alasan);
+    if (!registrasiEvent) {
+      return res.status(404).json({ error: "Registrasi Event not found" });
+    }
+
+    const udpateRegistrasiEvent = await prisma.register_Event.update({
+      where: { uuid: regisEventID },
+      data: { status_regis: status, alasan_bayar: alasan },
+    });
+
+    res.json({
+      status: 200,
+      message: "Status successfully Update",
+      udpateRegistrasiEvent,
     });
   } catch (error) {
     console.error(error);

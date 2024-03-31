@@ -2,7 +2,6 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// Increase quantity
 export const updateStatusSpecialRequest = async (req, res) => {
   const { specialReqID } = req.params;
   const { status, alasan } = req.body;

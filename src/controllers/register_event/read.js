@@ -155,7 +155,7 @@ export const getAllRegistrationByIdEvent = async (req, res) => {
       const { event } = registration;
 
       return {
-        uuid: event.uuid,
+        uuid: registration.uuid,
         status_bayar: {
           status: registration.status_regis,
           bukti_bayar: registration.bukti_bayar,
