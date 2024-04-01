@@ -221,3 +221,11 @@ model Special_Request {
    customer_id       String
    customer          Customer  @relation(fields: [customer_id], references: [uuid], onDelete: Cascade)
 }
+
+model Method_Payment {
+   uuid          String  @id @default(uuid())
+   name_method   String
+   status_method Int     @default(1)
+   no_rek        String?
+   img_pay       String
+}
