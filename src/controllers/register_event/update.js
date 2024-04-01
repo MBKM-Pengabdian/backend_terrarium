@@ -111,9 +111,6 @@ export const updateStatusRegistrationEvent = async (req, res) => {
     const registrasiEvent = await prisma.register_Event.findUnique({
       where: { uuid: regisEventID },
     });
-    console.log(regisEventID);
-    console.log(status);
-    console.log(alasan);
     if (!registrasiEvent) {
       return res.status(404).json({ error: "Registrasi Event not found" });
     }

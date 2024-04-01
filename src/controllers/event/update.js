@@ -139,7 +139,6 @@ export const updateEvent = async (req, res) => {
 
         // Handle banner_event update
         let updatedBannerEventFileUrl = existingEvent.banner_event;
-        console.log(updatedBannerEventFileUrl);
 
         if (req.files['banner_event']) {
             const compressedBannerEventUrl = await compressImage(req.files['banner_event'][0].path, config.IMG_LIMIT_SIZE);
@@ -161,8 +160,6 @@ export const updateEvent = async (req, res) => {
                 img_event: updatedImgEventFileUrl
             },
         });
-
-        console.log(existingEvent.detail_event[0].id);
 
         const updatedDetailEvent = await prisma.Detail_Event.update({
             where: {

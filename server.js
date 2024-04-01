@@ -14,6 +14,7 @@ import reviewProductRouter from './src/routes/review-product.js';
 import cartRouter from './src/routes/cart.js';
 import paymentRouter from './src/routes/payment.js';
 import specialRequestRoute from './src/routes/special-request.js';
+import methodPayRouter from './src/routes/method-payment.js';
 
 const app = express();
 
@@ -39,6 +40,7 @@ app.use('/api/banner', BannerRouter)
 app.use('/api/cart', cartRouter)
 app.use('/api/', paymentRouter)
 app.use('/api/special-request/', specialRequestRoute)
+app.use('/api/method-pay/', methodPayRouter)
 
 app.listen(config.APP_PORT, () => {
    console.log(`Server Activated On Port ${config.APP_PORT}`);
