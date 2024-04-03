@@ -51,16 +51,6 @@ export const updateMethodPay = async (req, res) => {
   const { methodPayId } = req.params;
   const { name_method, status_method, no_rek } = req.body;
   try {
-    let fileurl = null;
-    if (req.files["img_pay"]) {
-      fileurl = `/images/${req.files["img_pay"][0].filename}`;
-      const compressedImgEventUrl = await compressImage(
-        req.files["img_pay"][0].path,
-        config.IMG_LIMIT_SIZE
-      );
-      fileurl = compressedImgEventUrl || fileurl;
-    }
-
     const methodPayExist = await prisma.method_Payment.findUnique({
       where: { uuid: methodPayId },
     });
@@ -69,14 +59,24 @@ export const updateMethodPay = async (req, res) => {
       return res.status(404).json({ error: "Method Pay not found" });
     }
 
+    let updatedImgMethodFileUrl = methodPayExist.img_pay;
+
+    if (req.files["img_pay"]) {
+      const compressedImgEventUrl = await compressImage(
+        req.files["img_pay"][0].path,
+        config.IMG_LIMIT_SIZE
+      );
+      updatedImgMethodFileUrl = compressedImgEventUrl || updatedImgMethodFileUrl;
+    }
+
     const updateMethodPay = await prisma.method_Payment.update({
       where: { uuid: methodPayId },
-      data: { 
-        name_method, 
-        status_method: Number(status_method), 
-        no_rek, 
-        img_pay: fileurl 
-    },
+      data: {
+        name_method,
+        status_method: Number(status_method),
+        no_rek,
+        img_pay: updatedImgMethodFileUrl,
+      },
     });
 
     res.json({
