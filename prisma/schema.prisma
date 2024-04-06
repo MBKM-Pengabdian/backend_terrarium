@@ -146,6 +146,7 @@ model Detail_Event {
    date_event        String
    last_regist_event String
    kuota_event       Int
+   total_terdaftar   Int?       @default(0)
    created_at        DateTime   @default(now())
    event             Event      @relation(fields: [event_id], references: [uuid], onDelete: Cascade)
    timeline          Timeline[]
