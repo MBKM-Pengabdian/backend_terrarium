@@ -146,6 +146,7 @@ model Detail_Event {
    date_event        String
    last_regist_event String
    kuota_event       Int
+   total_terdaftar   Int?       @default(0)
    created_at        DateTime   @default(now())
    event             Event      @relation(fields: [event_id], references: [uuid], onDelete: Cascade)
    timeline          Timeline[]
@@ -173,6 +174,9 @@ model Register_Event {
    status_regis       Int      @default(1)
    bukti_bayar        String   @default("")
    alasan_bayar       String   @default("")
+   total_payment      Int?
+   tipe               String?
+   amout              Int?
 
    @@unique([customer_id, event_id])
 }
