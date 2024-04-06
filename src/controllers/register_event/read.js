@@ -25,10 +25,13 @@ export const getRegistrationEventUser = async (req, res) => {
 
       return {
         uuid: event.uuid,
-        status_bayar: {
+        transaction: {
           status: registration.status_regis,
           bukti_bayar: registration.bukti_bayar,
           alasan: registration.alasan_bayar,
+          total_price: registration.total_payment,
+          tipe: registration.tipe,
+          amout: registration.amout,
         },
         customer_data: {
           customer_id: registration.customer_id,
@@ -97,10 +100,13 @@ export const getRegistrationPaymentUser = async (req, res) => {
       const { event } = registration;
       return {
         uuid: registration.uuid,
-        status_bayar: {
+         transaction: {
           status: registration.status_regis,
           bukti_bayar: registration.bukti_bayar,
           alasan: registration.alasan_bayar,
+          total_price: registration.total_payment,
+          tipe: registration.tipe,
+          amout: registration.amout,
         },
         customer_data: {
           customer_id: registration.customer_id,
@@ -156,10 +162,13 @@ export const getAllRegistrationByIdEvent = async (req, res) => {
 
       return {
         uuid: registration.uuid,
-        status_bayar: {
+        transaction: {
           status: registration.status_regis,
           bukti_bayar: registration.bukti_bayar,
           alasan: registration.alasan_bayar,
+          total_price: registration.total_payment,
+          tipe: registration.tipe,
+          amout: registration.amout,
         },
         customer_data: {
           customer_id: registration.customer_id,

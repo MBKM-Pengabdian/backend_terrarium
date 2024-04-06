@@ -4,8 +4,15 @@ const prisma = new PrismaClient();
 
 export const registerEvent = async (req, res) => {
   try {
-    const { customer_id, event_id, email_customer, fullname_customer } =
-      req.body;
+    const {
+      customer_id,
+      event_id,
+      email_customer,
+      fullname_customer,
+      total_payment,
+      tipe,
+      amout,
+    } = req.body;
 
     //view event
     const existingEvent = await prisma.event.findUnique({
@@ -27,7 +34,7 @@ export const registerEvent = async (req, res) => {
       });
     }
 
-   //  console.log(existingEvent.detail_event[0].kuota_event);
+    //  console.log(existingEvent.detail_event[0].kuota_event);
 
     const existingRegistration = await prisma.register_Event.findFirst({
       where: {
@@ -54,17 +61,20 @@ export const registerEvent = async (req, res) => {
         event_id,
         email_customer,
         fullname_customer,
+        total_payment,
+        tipe,
+        amout,
         token_registration: `CACTI-${token_uuid}`,
       },
     });
 
-   //  update kuota
+    //  update kuota
     await prisma.detail_Event.update({
       where: {
         id: existingEvent.detail_event[0].id,
       },
       data: {
-        total_terdaftar: existingEvent.detail_event[0].total_terdaftar + 1,
+        total_terdaftar: existingEvent.detail_event[0].total_terdaftar + amout,
       },
     });
 
