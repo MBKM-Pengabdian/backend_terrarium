@@ -93,14 +93,14 @@ export const registerEvent = async (req, res) => {
   }
 };
 
-export const reminderBlastEmailEvent = async (req, res) => {
+export const sendReminderBlastEmailEvent = async (req, res) => {
   try {
-    const { eventID } = req.body;
+    const { idEvent } = req.params;
 
     //buka semua registrasi event yg id event_id nya == eventID dan status regis == 3
     const register_event = await prisma.register_Event.findMany({
       where: {
-        event_id: eventID,
+        event_id: idEvent,
         status_regis: 3,
       },
       include: {
