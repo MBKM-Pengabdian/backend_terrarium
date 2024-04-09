@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reminder Event</title>
+    <style>
+        .container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .content-page {
+            width: 550px;
+        }
+
+        .sub-title {
+            margin-top: -10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: black;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .box-content {
+            background-color: #EEEEEE;
+            padding: 10px 20px;
+            border-radius: 10px;
+        }
+
+        .box-content p {
+            margin-bottom: 10px;
+        }
+
+        /* Style untuk tombol */
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="content-page">
+            <h1 class="text-center sub-title">Update: <%= event_title %>
+            </h1>
+            <div class="box-content">
+                <h2 class="text-center">
+                    <%= event_title %>
+                </h2>
+                <p>Hi <%= username %> ,</p>
+                <p>We're excited to remind you about the upcoming "<%= event_title %>" event! . </p>
+                <p><strong>Event Details (Updated):</strong></p>
+                <ul style="list-style-type: none; padding-left: 0;">
+                    <li><strong>Date:</strong>
+                        <%= date %>
+                    </li>
+                    <li><strong>Time:</strong>
+                        <%= time %>
+                    </li>
+                    <li><strong>Location:</strong>
+                        <%= place %>
+                    </li>
+                </ul>
+                <div class="text-center">
+                    <a href=<%=linkTicket %>>
+                        <button>My Ticket</button>
+                    </a>
+                </div>
+                <p>Please make sure to attend and bring any necessary materials. We look forward to seeing you there!
+                </p>
+            </div>
+            <p>Regards,<br>Your Event Team</p>
+        </div>
+    </div>
+</body>
+
+</html>

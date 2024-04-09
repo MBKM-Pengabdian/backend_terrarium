@@ -176,11 +176,10 @@ export const updateEvent = async (req, res) => {
                 banner_event: updatedBannerEventFileUrl
             },
         });
-
         // Update the timeline events
         await prisma.Timeline.deleteMany({
             where: {
-                detail_event_id: existingEvent.detail_event_id,
+                detail_event_id: existingEvent.detail_event[0].id,
             },
         });
 

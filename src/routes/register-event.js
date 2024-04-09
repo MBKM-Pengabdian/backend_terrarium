@@ -1,6 +1,6 @@
 import express from "express";
 import { checkJWTCustomer, checkJWTSuperAdmin, checkJWTAdmin } from "../middleware/jwt.js";
-import { registerEvent, sendReminderBlastEmailEvent } from "./../controllers/register_event/create.js";
+import { registerEvent, sendReminderBlastEmailEvent, sendReminderUpdatedEvent } from "./../controllers/register_event/create.js";
 import { getRegistrationEventUser, getAllRegistrationEvent, getRegistrationPaymentUser, getAllRegistrationByIdEvent } from "./../controllers/register_event/read.js";
 import { updateStatusRegistrationEvent, upload, uploadBuktiBayarEvent } from "../controllers/register_event/update.js";
 
@@ -14,5 +14,6 @@ RegisterEventRouter.post('/upload-bukti-bayar/:regisEventID/store', checkJWTCust
 RegisterEventRouter.post('/update-status/:regisEventID', checkJWTAdmin, updateStatusRegistrationEvent);
 RegisterEventRouter.post('/register-event/store', checkJWTCustomer, registerEvent);
 RegisterEventRouter.post('/reminder-event/:idEvent', checkJWTAdmin, sendReminderBlastEmailEvent);
+RegisterEventRouter.post('/reminder-event-updated/:idEvent', checkJWTAdmin, sendReminderUpdatedEvent);
 
 export default RegisterEventRouter;
