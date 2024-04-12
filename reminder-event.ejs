@@ -58,16 +58,17 @@
 <body>
     <div class="container">
         <div class="content-page">
-            <h1 class="text-center sub-title">Reminder in <%= sisahari %> days the event will take place</h1>
+            <h2 class="text-center sub-title">Reminder in <%= sisahari %> days the event will take place</h2>
             <div class="box-content">
-                <h2 class="text-center">
-                    <%= event_title %>
-                </h2>
                 <p>Hi <%= username %> ,</p>
                 <p>Just a friendly reminder about tomorrow's event on "<%= event_title %>".
                 </p>
                 <p><strong>Event Details:</strong></p>
                 <ul style="list-style-type: none; padding-left: 0;">
+                    <li>
+                        <strong>Event:</strong>
+                        <%= event_title %>
+                    </li>
                     <li><strong>Date:</strong>
                         <%= date %>
                     </li>

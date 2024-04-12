@@ -93,7 +93,7 @@ export const registerEvent = async (req, res) => {
   }
 };
 
-export const sendReminderBlastEmailEvent = async (req, res) => {
+export const sendReminderEmailEvent = async (req, res) => {
   try {
     const { idEvent } = req.params;
     const { sisahari } = req.body;
@@ -136,7 +136,7 @@ export const sendReminderBlastEmailEvent = async (req, res) => {
       const mailOption = {
         from: "putramhmmd22@gmail.com",
         to: registration.email_customer,
-        subject: "Reminder Event Cacti Life",
+        subject: "Reminder: Your Event in Cacti Life",
         html: html,
       };
 
@@ -144,7 +144,11 @@ export const sendReminderBlastEmailEvent = async (req, res) => {
         await transporter.sendMail(mailOption);
         console.log("Email sent successfully to:", registration.email_customer);
       } catch (error) {
-        console.error("Error sending email to:", registration.email_customer, error);
+        console.error(
+          "Error sending email to:",
+          registration.email_customer,
+          error
+        );
       }
     });
 
@@ -182,7 +186,10 @@ export const sendReminderUpdatedEvent = async (req, res) => {
         pass: "nqtn lkuj zzix zdka",
       },
     });
-    const templateString = fs.readFileSync("./reminder-updated-event.ejs", "utf-8");
+    const templateString = fs.readFileSync(
+      "./reminder-updated-event.ejs",
+      "utf-8"
+    );
 
     register_event.forEach(async (registration) => {
       const { event } = registration;
@@ -199,7 +206,7 @@ export const sendReminderUpdatedEvent = async (req, res) => {
       const mailOption = {
         from: "putramhmmd22@gmail.com",
         to: registration.email_customer,
-        subject: "Reminder Event Cacti Life",
+        subject: "Update: Your event on Cacti Life has changed",
         html: html,
       };
 
@@ -207,9 +214,76 @@ export const sendReminderUpdatedEvent = async (req, res) => {
         await transporter.sendMail(mailOption);
         console.log("Email sent successfully to:", registration.email_customer);
       } catch (error) {
-        console.error("Error sending email to:", registration.email_customer, error);
+        console.error(
+          "Error sending email to:",
+          registration.email_customer,
+          error
+        );
       }
     });
+
+    res.status(200).json({
+      status: 200,
+      message: "Email successfully to send",
+    });
+  } catch (error) {
+    console.error("Error registering event:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const sendReminderPayEvent = async (req, res) => {
+  try {
+    const { regisEventID } = req.params;
+    //buka semua registrasi event yg id event_id nya == eventID dan status regis == 3
+    const register_event = await prisma.register_Event.findMany({
+      where: {
+        uuid: regisEventID,
+      },
+      include: {
+        event: {
+          include: {
+            detail_event: true,
+          },
+        },
+      },
+    });
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "putramhmmd22@gmail.com",
+        pass: "nqtn lkuj zzix zdka",
+      },
+    });
+    const templateString = fs.readFileSync("./reminder-pay-event.ejs", "utf-8");
+    const registEvent = register_event[0];
+    const detailEvent = registEvent.event.detail_event[0]; // Mengambil detail event pertama
+    const data = {
+      username: registEvent.fullname_customer,
+      event_title: registEvent.event.title_event,
+      date: getFormattedDate(detailEvent.date_event),
+      time: `${getFormattedTime(detailEvent.date_event)} - end`,
+      place: registEvent.event.place,
+      linkTicket: "https://muhammadsyahputra.vercel.app/",
+    };
+    const html = ejs.render(templateString, data);
+    const mailOption = {
+      from: "putramhmmd22@gmail.com",
+      to: registEvent.email_customer,
+      subject: "Reminder: Complete Your Payment, Cacti Life",
+      html: html,
+    };
+
+    try {
+      await transporter.sendMail(mailOption);
+      console.log("Email sent successfully to:", registEvent.email_customer);
+    } catch (error) {
+      console.error(
+        "Error sending email to:",
+        registration.email_customer,
+        error
+      );
+    }
 
     res.status(200).json({
       status: 200,

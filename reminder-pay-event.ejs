@@ -2,8 +2,8 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Reminder Event</title>
     <style>
         .container {
@@ -29,7 +29,7 @@
         }
 
         .box-content {
-            background-color: #EEEEEE;
+            background-color: #eeeeee;
             padding: 10px 20px;
             border-radius: 10px;
         }
@@ -40,7 +40,7 @@
 
         /* Style untuk tombol */
         button {
-            background-color: #4CAF50;
+            background-color: #4caf50;
             color: white;
             padding: 10px 20px;
             border: none;
@@ -58,36 +58,52 @@
 <body>
     <div class="container">
         <div class="content-page">
-            <h2 class="text-center sub-title">Update: <%= event_title %>
+            <h2 class="text-center sub-title">
+                Remind to complete the your payment
             </h2>
             <div class="box-content">
                 <p>Hi <%= username %> ,</p>
-                <p>We're excited to remind you about the upcoming "<%= event_title %>" event! . </p>
-                <p><strong>Event Details (Updated):</strong></p>
-                <ul style="list-style-type: none; padding-left: 0;">
+                <p>
+                    I hope you are fine. I would like to remind you of the pending
+                    payment for "<%= event_title %>". We appreciate your cooperation in
+                        resolving this obligation as soon as possible.
+                </p>
+                <p><strong>For Event:</strong></p>
+                <ul style="list-style-type: none; padding-left: 0">
                     <li>
                         <strong>Event:</strong>
                         <%= event_title %>
                     </li>
-                    <li><strong>Date:</strong>
+                    <li>
+                        <strong>Date:</strong>
                         <%= date %>
                     </li>
-                    <li><strong>Time:</strong>
+                    <li>
+                        <strong>Time:</strong>
                         <%= time %>
                     </li>
-                    <li><strong>Location:</strong>
+                    <li>
+                        <strong>Location:</strong>
                         <%= place %>
                     </li>
                 </ul>
                 <div class="text-center">
                     <a href=<%=linkTicket %>>
-                        <button>My Ticket</button>
+                        <button>Our Website</button>
                     </a>
                 </div>
-                <p>Please make sure to attend and bring any necessary materials. We look forward to seeing you there!
+                <p>
+                    Please process this payment to avoid further delays. You can do it
+                    on our website, login>pesanan saya>pembayaran. If you have any
+                    questions or concerns regarding this payment, please feel free to
+                    contact us.
+                </p>
+                <p>
+                    Thank you for your attention in this matter. We hope to receive your
+                    payment in the near future.
                 </p>
             </div>
-            <p>Regards,<br>Your Event Team</p>
+            <p>Regards,<br />Your Event Team</p>
         </div>
     </div>
 </body>
