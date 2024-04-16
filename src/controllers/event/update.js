@@ -109,6 +109,7 @@ export const updateEvent = async (req, res) => {
             timeline,
             contact_person,
             place,
+            wag,
         } = req.body;
 
         const eventId = req.params.eventId;
@@ -157,6 +158,7 @@ export const updateEvent = async (req, res) => {
                 status: status === 'true',
                 contact_person,
                 place,
+                wag,
                 img_event: updatedImgEventFileUrl
             },
         });

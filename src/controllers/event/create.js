@@ -113,6 +113,7 @@ export const createEvent = async (req, res) => {
             timeline,
             contact_person,
             place,
+            wag,
         } = req.body;
 
         let imgEventFileUrl = null;
@@ -140,6 +141,7 @@ export const createEvent = async (req, res) => {
                 status: (status === 'true'),
                 contact_person,
                 place,
+                wag,
             },
         });
 

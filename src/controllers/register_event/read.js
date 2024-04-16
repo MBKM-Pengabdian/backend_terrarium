@@ -43,6 +43,7 @@ export const getRegistrationEventUser = async (req, res) => {
           token_registration: registration.token_registration,
           title_event: event.title_event,
           place: event.place,
+          wag: event.wag,
           detail_event_data: event.detail_event.map((detailEvent) => ({
             description_event: detailEvent.description_event,
             sponsor_event: detailEvent.sponsor_event,
