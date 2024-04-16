@@ -128,6 +128,7 @@ model Event {
    price_event    String
    contact_person String
    place          String
+   wag            String?
    status         Boolean
    created_at     DateTime         @default(now())
    user           User             @relation(fields: [user_id], references: [uuid], onDelete: Cascade)

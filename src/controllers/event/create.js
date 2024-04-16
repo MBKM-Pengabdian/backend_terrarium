@@ -113,10 +113,11 @@ export const createEvent = async (req, res) => {
             timeline,
             contact_person,
             place,
+            wag,
         } = req.body;
 
-        let imgEventFileUrl = null;
-        let bannerEventFileUrl = null;
+        let imgEventFileUrl = `/images/no-image.png`;;
+        let bannerEventFileUrl = `/images/no-image.png`;;
 
         if (req.files['img_event']) {
             imgEventFileUrl = `/images/${req.files['img_event'][0].filename}`;
@@ -140,6 +141,7 @@ export const createEvent = async (req, res) => {
                 status: (status === 'true'),
                 contact_person,
                 place,
+                wag,
             },
         });
 
