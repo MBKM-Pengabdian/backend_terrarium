@@ -116,8 +116,8 @@ export const createEvent = async (req, res) => {
             wag,
         } = req.body;
 
-        let imgEventFileUrl = null;
-        let bannerEventFileUrl = null;
+        let imgEventFileUrl = `/images/no-image.png`;;
+        let bannerEventFileUrl = `/images/no-image.png`;;
 
         if (req.files['img_event']) {
             imgEventFileUrl = `/images/${req.files['img_event'][0].filename}`;

@@ -131,19 +131,19 @@ export const updateEvent = async (req, res) => {
             });
         }
 
-        let updatedImgEventFileUrl = existingEvent.img_event;
+        let updateImgEventFileUrl = null;
+        let updateBannerEventFileUrl = null;
 
         if (req.files['img_event']) {
+            updateImgEventFileUrl = `/images/${req.files['img_event'][0].filename}`;
             const compressedImgEventUrl = await compressImage(req.files['img_event'][0].path, config.IMG_LIMIT_SIZE);
-            updatedImgEventFileUrl = compressedImgEventUrl || updatedImgEventFileUrl;
+            updateImgEventFileUrl = compressedImgEventUrl || updateImgEventFileUrl;
         }
 
-        // Handle banner_event update
-        let updatedBannerEventFileUrl = existingEvent.banner_event;
-
         if (req.files['banner_event']) {
+            updateBannerEventFileUrl = `/images/${req.files['banner_event'][0].filename}`;
             const compressedBannerEventUrl = await compressImage(req.files['banner_event'][0].path, config.IMG_LIMIT_SIZE);
-            updatedBannerEventFileUrl = compressedBannerEventUrl || updatedBannerEventFileUrl;
+            updateBannerEventFileUrl = compressedBannerEventUrl || updateBannerEventFileUrl;
         }
 
         // Update the event data
@@ -159,7 +159,7 @@ export const updateEvent = async (req, res) => {
                 contact_person,
                 place,
                 wag,
-                img_event: updatedImgEventFileUrl
+                img_event: updateImgEventFileUrl
             },
         });
 
@@ -175,7 +175,7 @@ export const updateEvent = async (req, res) => {
                 date_event,
                 last_regist_event,
                 kuota_event: parseInt(kuota_event),
-                banner_event: updatedBannerEventFileUrl
+                banner_event: updateBannerEventFileUrl
             },
         });
         // Update the timeline events
