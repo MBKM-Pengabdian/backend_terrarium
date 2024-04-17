@@ -34,7 +34,12 @@ export const updateProduct = async (req, res) => {
    try {
       // Apply the Multer middleware here
       upload(req, res, async function (err) {
-         if (err) {
+         if (err instanceof multer.MulterError) {
+            return res.status(400).send({
+               status: 400,
+               message: "Error uploading file",
+            });
+         } else if (err) {
             return res.status(400).send({
                status: 400,
                message: err.message || "Invalid Image",
@@ -42,7 +47,7 @@ export const updateProduct = async (req, res) => {
          }
 
          const { productId } = req.params;
-         const { user_id, product_name, description, price, stock_quantity } = req.body;
+         const { user_id, product_name, description, price, stock_quantity, status_product } = req.body;
          const parsedPrice = parseFloat(price);
          const parsedStockQuantity = parseInt(stock_quantity);
 
@@ -65,50 +70,55 @@ export const updateProduct = async (req, res) => {
             });
          }
 
-         let updatedProduct;
+         let updateData = {
+            user_id,
+            product_name,
+            description,
+            price: parsedPrice,
+            stock_quantity: parsedStockQuantity,
+            status_product: parseInt(status_product) 
+         };
 
-         const size = (await fs.promises.stat(req.file.path)
-            .then((respond) => respond.size)
-            .catch((error) => -1));
+         if (req.file) {
+            const size = (await fs.promises.stat(req.file.path)
+               .then((respond) => respond.size)
+               .catch((error) => -1));
 
-         let sizeAcceptedInPercent = Math.floor((size - (size - (config.IMG_LIMIT_SIZE / 2))) / (size / 100));
+            let sizeAcceptedInPercent = Math.floor((size - (size - (config.IMG_LIMIT_SIZE / 2))) / (size / 100));
 
-         // Ensure that sizeAcceptedInPercent is within the valid range (1 to 100)
-         sizeAcceptedInPercent = Math.min(100, Math.max(1, sizeAcceptedInPercent));
+            // Ensure that sizeAcceptedInPercent is within the valid range (1 to 100)
+            sizeAcceptedInPercent = Math.min(100, Math.max(1, sizeAcceptedInPercent));
 
-         await sharp(req.file.path)
-            .jpeg({ quality: sizeAcceptedInPercent })
-            .toFile(`${config.IMG_UPLOAD_DIR}/compress-${req.file.filename}`)
-            .then(async () => {
-               updatedProduct = await prisma.Product.update({
-                  where: { uuid: productId },
-                  data: {
-                     user_id,
-                     product_name,
-                     product_image: `/images/compress-${req.file.filename}`,
-                     description,
-                     price: parsedPrice,
-                     stock_quantity: parsedStockQuantity,
-                  },
+            await sharp(req.file.path)
+               .jpeg({ quality: sizeAcceptedInPercent })
+               .toFile(`${config.IMG_UPLOAD_DIR}/compress-${req.file.filename}`)
+               .then(() => {
+                  updateData.product_image = `/images/compress-${req.file.filename}`;
+
+                  fs.promises.unlink(req.file.path)
+                     .then(() => null)
+                     .catch((err) => console.error('Error deleting original file:', err));
+               })
+               .catch((err) => {
+                  console.error(err);
+                  return res.status(500).send({
+                     status: 500,
+                     message: "An error occurred while updating the product image.",
+                  });
                });
+         }
 
-               res.status(200).send({
-                  status: 200,
-                  message: "Updated",
-                  data: updatedProduct,
-               });
+         const updatedProduct = await prisma.Product.update({
+            where: { uuid: productId },
+            data: updateData,
+         });
 
-               fs.promises.unlink(req.file.path)
-                  .then(() => null)
-                  .catch((err) => console.error('Error deleting original file:', err));
-            })
-            .catch((err) => {
-               console.error(err);
-               return res.status(500).send({
-                  status: 500,
-                  message: "An error occurred while updating the product image.",
-               });
-            });
+         res.status(200).send({
+            status: 200,
+            message: "Updated",
+            data: updatedProduct,
+         });
+
       });
 
    } catch (error) {
