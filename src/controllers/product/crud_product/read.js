@@ -4,7 +4,11 @@ const prisma = new PrismaClient();
 // Read all products
 export const getAllProduct = async (req, res) => {
    try {
-      const products = await prisma.product.findMany();
+      const products = await prisma.product.findMany({
+         orderBy: {
+            created_at: 'asc',
+         },
+      });
 
       res.status(200).send({
          status: 200,
@@ -43,6 +47,28 @@ export const getProductById = async (req, res) => {
             product,
             reviews
          }
+      });
+   } catch (error) {
+      console.log(error);
+   }
+};
+
+// Read all products
+export const getAllProductActive = async (req, res) => {
+   try {
+      const products = await prisma.product.findMany({
+         where: {
+            status_product: 1,
+         },
+         orderBy: {
+            created_at: 'asc',
+         },
+      });
+
+      res.status(200).send({
+         status: 200,
+         message: "OK",
+         data: products,
       });
    } catch (error) {
       console.log(error);

@@ -13,6 +13,9 @@ export const getAllEvent = async (req, res) => {
                 },
             },
         },
+        orderBy: {
+            created_at: 'asc', // Urutkan berdasarkan created_at secara asc
+        },
     });
 
     res.status(200).json({

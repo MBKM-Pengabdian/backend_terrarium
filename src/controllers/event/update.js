@@ -131,8 +131,8 @@ export const updateEvent = async (req, res) => {
             });
         }
 
-        let updateImgEventFileUrl = null;
-        let updateBannerEventFileUrl = null;
+        let updateImgEventFileUrl = existingEvent.img_event;
+        let updateBannerEventFileUrl = existingEvent.detail_event[0].banner_event;
 
         if (req.files['img_event']) {
             updateImgEventFileUrl = `/images/${req.files['img_event'][0].filename}`;

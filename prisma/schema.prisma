@@ -83,6 +83,7 @@ model Product {
    order_item     Order_Item[]
    Cart           Cart[]
    Payment        Payment[]
+   status_product Int          @default(1)
 }
 
 model Review {
