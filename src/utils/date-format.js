@@ -8,6 +8,14 @@ export const dateFormat = (customDate) => {
    return `${year}-${month}-${day}T00:00:00.000Z`;
 };
 
+export const myDate = (d) => {
+  const date = new Date(d);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const datee = date.getDate();
+  return `${year}-${month < 10 ? "0" : ""}${month}-${datee}`;
+};
+
 // Function to get the date in the format "Thursday, 20 April 2024"
 export const getFormattedDate = (dateString) => {
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];

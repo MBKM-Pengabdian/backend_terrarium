@@ -5,6 +5,8 @@ import path from "path";
 import sharp from "sharp";
 import fs from "fs/promises";
 import config from "../../config/app.js";
+import { sendTicketToEmail } from "../../utils/myfunction.js";
+import { getFormattedDate, getFormattedTime, myDate } from "../../utils/date-format.js";
 
 const prisma = new PrismaClient();
 
@@ -110,6 +112,13 @@ export const updateStatusRegistrationEvent = async (req, res) => {
   try {
     const registrasiEvent = await prisma.register_Event.findUnique({
       where: { uuid: regisEventID },
+      include: {
+        event: {
+          include: {
+            detail_event: true,
+          },
+        },
+      },
     });
     if (!registrasiEvent) {
       return res.status(404).json({ error: "Registrasi Event not found" });
@@ -119,6 +128,25 @@ export const updateStatusRegistrationEvent = async (req, res) => {
       where: { uuid: regisEventID },
       data: { status_regis: status, alasan_bayar: alasan },
     });
+    const dataRegist = registrasiEvent
+    const dataEvent = registrasiEvent.event
+    const dataDetailEvent = registrasiEvent.event.detail_event[0]
+
+    if (status == 3) {
+      const dataSend = {
+        username: dataRegist.fullname_customer,
+        event_title: dataEvent.title_event,
+        date: getFormattedDate(dataDetailEvent.date_event),
+        time: getFormattedTime(dataDetailEvent.date_event),
+        place: dataEvent.place,
+        codeqr: dataRegist.token_registration,
+        toEmail: dataRegist.email_customer,
+        wag: dataEvent.wag,
+        no: dataRegist.token_registration,
+        terdaftarAt: myDate(dataRegist.created_at),
+      };
+      const resSendTicket = sendTicketToEmail(dataSend);
+    }
 
     res.json({
       status: 200,
