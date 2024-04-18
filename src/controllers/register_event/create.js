@@ -4,7 +4,15 @@ const prisma = new PrismaClient();
 import nodemailer from "nodemailer";
 import ejs from "ejs";
 import fs from "fs";
-import { getFormattedDate, getFormattedTime } from "../../utils/date-format.js";
+import {
+  getFormattedDate,
+  getFormattedTime,
+  myDate,
+} from "../../utils/date-format.js";
+import {
+  generateTicketPDF,
+  sendTicketToEmail,
+} from "../../utils/myfunction.js";
 
 export const registerEvent = async (req, res) => {
   try {
@@ -111,6 +119,7 @@ export const sendReminderEmailEvent = async (req, res) => {
         },
       },
     });
+
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -118,7 +127,10 @@ export const sendReminderEmailEvent = async (req, res) => {
         pass: "nqtn lkuj zzix zdka",
       },
     });
-    const templateString = fs.readFileSync("./reminder-event.ejs", "utf-8");
+    const templateString = fs.readFileSync(
+      "./src/receipt/reminder-event.ejs",
+      "utf-8"
+    );
 
     register_event.forEach(async (registration) => {
       const { event } = registration;
@@ -133,11 +145,37 @@ export const sendReminderEmailEvent = async (req, res) => {
         linkTicket: "https://muhammadsyahputra.vercel.app/",
       };
       const html = ejs.render(templateString, data);
+
+      const dataRegist = registration;
+      const dataEvent = registration.event;
+      const dataDetailEvent = registration.event.detail_event[0];
+
+      const dataSend = {
+        username: dataRegist.fullname_customer,
+        event_title: dataEvent.title_event,
+        date: getFormattedDate(dataDetailEvent.date_event),
+        time: getFormattedTime(dataDetailEvent.date_event),
+        place: dataEvent.place,
+        codeqr: dataRegist.token_registration,
+        toEmail: dataRegist.email_customer,
+        wag: dataEvent.wag,
+        no: dataRegist.token_registration,
+        terdaftarAt: myDate(dataRegist.created_at),
+      };
+      const pdfTicket = await generateTicketPDF(dataSend);
+
       const mailOption = {
         from: "putramhmmd22@gmail.com",
         to: registration.email_customer,
         subject: "Reminder: Your Event in Cacti Life",
         html: html,
+        attachments: [
+          {
+            filename: `Ticket-${dataEvent.title_event}-${dataRegist.token_registration}.pdf`,
+            content: pdfTicket,
+            contentType: "application/pdf",
+          },
+        ],
       };
 
       try {
@@ -187,7 +225,7 @@ export const sendReminderUpdatedEvent = async (req, res) => {
       },
     });
     const templateString = fs.readFileSync(
-      "./reminder-updated-event.ejs",
+      "./src/receipt/reminder-updated-event.ejs",
       "utf-8"
     );
 
@@ -255,7 +293,10 @@ export const sendReminderPayEvent = async (req, res) => {
         pass: "nqtn lkuj zzix zdka",
       },
     });
-    const templateString = fs.readFileSync("./reminder-pay-event.ejs", "utf-8");
+    const templateString = fs.readFileSync(
+      "./src/receipt/reminder-pay-event.ejs",
+      "utf-8"
+    );
     const registEvent = register_event[0];
     const detailEvent = registEvent.event.detail_event[0]; // Mengambil detail event pertama
     const data = {
@@ -281,6 +322,82 @@ export const sendReminderPayEvent = async (req, res) => {
       console.error(
         "Error sending email to:",
         registration.email_customer,
+        error
+      );
+    }
+
+    res.status(200).json({
+      status: 200,
+      message: "Email successfully to send",
+    });
+  } catch (error) {
+    console.error("Error registering event:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const sendTicketEvent = async (req, res) => {
+  try {
+    const { regisEventID } = req.params;
+    console.log(regisEventID);
+    const register_event = await prisma.register_Event.findFirst({
+      where: {
+        uuid: regisEventID,
+      },
+      include: {
+        event: {
+          include: {
+            detail_event: true,
+          },
+        },
+      },
+    });
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "putramhmmd22@gmail.com",
+        pass: "nqtn lkuj zzix zdka",
+      },
+    });
+    const dataRegist = register_event;
+    const dataEvent = register_event.event;
+    const dataDetailEvent = register_event.event.detail_event[0];
+
+    const dataSend = {
+      username: dataRegist.fullname_customer,
+      event_title: dataEvent.title_event,
+      date: getFormattedDate(dataDetailEvent.date_event),
+      time: getFormattedTime(dataDetailEvent.date_event),
+      place: dataEvent.place,
+      codeqr: dataRegist.token_registration,
+      toEmail: dataRegist.email_customer,
+      wag: dataEvent.wag,
+      no: dataRegist.token_registration,
+      terdaftarAt: myDate(dataRegist.created_at),
+    };
+    const pdfTicket = await generateTicketPDF(dataSend);
+
+    const mailOption = {
+      from: "putramhmmd22@gmail.com",
+      to: dataRegist.email_customer,
+      subject: "Reminder: Your Event in Cacti Life",
+      attachments: [
+        {
+          filename: `Ticket-${dataEvent.title_event}-${dataRegist.token_registration}.pdf`,
+          content: pdfTicket,
+          contentType: "application/pdf",
+        },
+      ],
+    };
+
+    try {
+      await transporter.sendMail(mailOption);
+      console.log("Email sent successfully to:", dataRegist.email_customer);
+    } catch (error) {
+      console.error(
+        "Error sending email to:",
+        dataRegist.email_customer,
         error
       );
     }
