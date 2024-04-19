@@ -82,7 +82,7 @@ export const createSpecialRequest = async (req, res) => {
     project_location,
   } = req.body;
   try {
-    let imgSpecialReqFileUrl = null;
+    let imgSpecialReqFileUrl = "/images/no-image.png";
     if (req.files["photo"]) {
       imgSpecialReqFileUrl = `/images/${req.files["photo"][0].filename}`;
       const compressedImgSpecialReqtUrl = await compressImage(
