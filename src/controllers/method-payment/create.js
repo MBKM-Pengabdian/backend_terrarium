@@ -68,7 +68,7 @@ const compressImage = async (filePath, fileSizeLimit) => {
 // Create a Method
 export const createMethodPay = async (req, res) => {
   try {
-    const { name_method, no_rek } = req.body;
+    const { name_method, no_rek, nama_rek } = req.body;
 
     let fileUrl = null;
     if (req.files["img_pay"]) {
@@ -85,6 +85,7 @@ export const createMethodPay = async (req, res) => {
         uuid: uuidv4(),
         name_method,
         img_pay: fileUrl,
+        nama_rek,
         no_rek,
       },
     });

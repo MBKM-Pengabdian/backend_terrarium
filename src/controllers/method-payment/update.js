@@ -49,7 +49,7 @@ const compressImage = async (filePath, fileSizeLimit) => {
 
 export const updateMethodPay = async (req, res) => {
   const { methodPayId } = req.params;
-  const { name_method, status_method, no_rek } = req.body;
+  const { name_method, status_method, no_rek, nama_rek } = req.body;
   try {
     const methodPayExist = await prisma.method_Payment.findUnique({
       where: { uuid: methodPayId },
@@ -75,6 +75,7 @@ export const updateMethodPay = async (req, res) => {
         name_method,
         status_method: Number(status_method),
         no_rek,
+        nama_rek,
         img_pay: updatedImgMethodFileUrl,
       },
     });

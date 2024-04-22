@@ -183,6 +183,7 @@ export const getAllRegistrationByIdEvent = async (req, res) => {
           price: event.price_event,
           img_event: event.img_event,
           detail_event_data: event.detail_event.map((detailEvent) => ({
+            kuota_event: detailEvent.kuota_event,
             description_event: detailEvent.description_event,
             sponsor_event: detailEvent.sponsor_event,
             speaker_event: detailEvent.speaker_event,

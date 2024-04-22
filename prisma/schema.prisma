@@ -233,5 +233,6 @@ model Method_Payment {
    name_method   String
    status_method Int     @default(1)
    no_rek        String?
+   nama_rek      String?
    img_pay       String
 }
