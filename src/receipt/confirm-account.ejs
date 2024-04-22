@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konfirmasi AKun</title>
+    <script src="https://kit.fontawesome.com/f9e187ccca.js" crossorigin="anonymous"></script>
+    <style>
+        .container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .content-page {
+            width: 550px;
+        }
+
+        .sub-title {
+            margin-top: -10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: black;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .box-content {
+            background-color: #F5F7F8;
+            /* padding: 10px 20px; */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .box-content p {
+            margin-bottom: 10px;
+        }
+
+        /* Style untuk tombol */
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body bgcolor="#F0F0F0">
+    <div class="container">
+        <div class="content-page">
+            <div class="box-content text-center">
+                <div class="" style="padding: 10px 20px;">
+                    <h2>
+                        Verifikasi Email Anda
+                    </h2>
+                    <p>Penting! Untuk melanjutkan dan mengaktifkan akun Anda, harap verifikasi email Anda dengan
+                        mengklik tautan yang telah
+                        kami kirimkan dibawah ini</p>
+                    <br>
+                    <a href="<%= verify %>" class="button" style="text-decoration: none; color:white;">Verifikasi
+                        Email</a>
+                    <br><br>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+</html>
