@@ -4,7 +4,21 @@ const prisma = new PrismaClient();
 // Retrieve all customers
 export const getAllCustomers = async (req, res) => {
    try {
-      const customers = await prisma.customer.findMany();
+      const customers = await prisma.customer.findMany({
+         select: {
+            uuid: true,
+            username: true,
+            email: true,
+            password: true,
+            phone: true,
+            address: true,
+            created_at: true,
+            status_customer: true,
+         },
+         orderBy: {
+            created_at: 'asc'
+         }
+      });
       res.status(200).send({
          status: 200,
          message: "OK",
