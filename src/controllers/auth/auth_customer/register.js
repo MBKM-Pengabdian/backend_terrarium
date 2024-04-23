@@ -38,7 +38,7 @@ export const register = async (req, res) => {
     });
 
     if (existEmailCustomer !== null) {
-       return res.status(500).send({
+      return res.status(500).send({
         message: "Email Sudah dipakai",
       });
     }
@@ -72,7 +72,7 @@ export const register = async (req, res) => {
 
       const data = {
         email: email,
-        verify: `${process.env.CLIENT_SIDE}/verify-email/${resRegist.uuid}`
+        verify: `${process.env.CLIENT_SIDE}/activated-email/${resRegist.uuid}`,
       };
       const html = ejs.render(templateString, data);
 
@@ -97,6 +97,38 @@ export const register = async (req, res) => {
   } catch (error) {
     return res.status(500).send({
       message: "An Error Has Occured",
+    });
+  }
+};
+export const activateAccount = async (req, res) => {
+  try {
+    const prisma = new PrismaClient();
+    const { idcustomer } = req.params;
+
+    const existCustomer = await prisma.customer.findUnique({
+      where: {
+        uuid: idcustomer,
+      },
+    });
+
+    if (existCustomer == null) {
+      return res.status(500).send({
+        message: "Pelanggan tidak ditemukan",
+      });
+    }
+
+    const activatedAccount = await prisma.customer.update({
+      where: { uuid: idcustomer },
+      data: { status_customer: true },
+    });
+
+    res.json({
+      status: 200,
+      message: "Akun berhasil diaktifkan",
+    });
+  } catch {
+    return res.status(500).send({
+      message: "Terjadi Kesalahan",
     });
   }
 };
