@@ -61,3 +61,43 @@ export const register = async (req, res) => {
       });
    }
 };
+
+// Fungsi untuk mengatur jalannya registrasi saat server pertama kali dijalankan
+export const registerOnServerStart = async () => {
+   try {
+      const prisma = new PrismaClient();
+      const defaultUsername = 'admin';
+      const defaultPassword = 'admin'; 
+      const defaultEmail = 'admin@example.com';
+      const defaultPhone = '123456789';
+      const defaultAddress = 'Admin Address';
+      const defaultRole = 'super admin';
+
+      // Periksa apakah user dengan username 'admin' sudah ada
+      const adminUser = await prisma.user.findFirst({
+         where: {
+            username: defaultUsername,
+         },
+      });
+
+      // Jika user 'admin' belum ada, maka buatlah akun admin
+      if (!adminUser) {
+         const hashedPassword = bcrypt.hashSync(defaultPassword, 10);
+
+         await prisma.user.create({
+            data: {
+               role: defaultRole,
+               email: defaultEmail,
+               username: defaultUsername,
+               phone: defaultPhone,
+               address: defaultAddress,
+               password: hashedPassword,
+            },
+         });
+
+         console.log('Admin account created successfully.');
+      }
+   } catch (error) {
+      console.error('Error creating admin account:', error);
+   }
+};
