@@ -237,3 +237,11 @@ model Method_Payment {
    nama_rek      String?
    img_pay       String
 }
+
+model Config_perusahaan {
+   uuid        String @id @default(uuid())
+   info_telp   String
+   info_alamat String
+   info_email  String
+   logo_prsh   String
+}
