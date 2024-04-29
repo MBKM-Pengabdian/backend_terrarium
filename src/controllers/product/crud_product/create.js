@@ -38,7 +38,7 @@ export const createProduct = async (req, res) => {
 
       const { user_id, product_name, description, price, stock_quantity } = req.body;
 
-      let fileUrl = `/images/no-img.png`
+      let fileUrl = "/images/no-image.png"
 
       if (req.file) {
          fileUrl = `/images/${req.file.filename}`;
