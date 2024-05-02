@@ -68,7 +68,13 @@ const compressImage = async (filePath, fileSizeLimit) => {
 
 export const updateConfigPrsh = async (req, res) => {
   try {
-    const { info_telp, info_alamat, info_email } = req.body;
+    const {
+      info_telp,
+      info_alamat,
+      info_email,
+      email_mailer,
+      password_mailer,
+    } = req.body;
 
     const existingConfig = await prisma.config_perusahaan.findFirst({});
 
@@ -88,6 +94,8 @@ export const updateConfigPrsh = async (req, res) => {
           info_telp,
           info_alamat,
           info_email,
+          email_mailer,
+          password_mailer,
           logo_prsh: updateLogoPrsh, // rapikan lagi yg utk gambar logo_prsh nya
         },
       });
@@ -103,6 +111,8 @@ export const updateConfigPrsh = async (req, res) => {
           info_telp,
           info_alamat,
           info_email,
+          email_mailer,
+          password_mailer,
           logo_prsh: updatedLogoPrsh, // rapikan lagi yg utk gambar logo_prsh nya
         },
       });

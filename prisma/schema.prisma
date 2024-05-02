@@ -239,9 +239,11 @@ model Method_Payment {
 }
 
 model Config_perusahaan {
-   uuid        String @id @default(uuid())
-   info_telp   String
-   info_alamat String
-   info_email  String
-   logo_prsh   String
+   uuid            String  @id @default(uuid())
+   info_telp       String
+   info_alamat     String
+   info_email      String
+   logo_prsh       String
+   email_mailer    String?
+   password_mailer String?
 }
