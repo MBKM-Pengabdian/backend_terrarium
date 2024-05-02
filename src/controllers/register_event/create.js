@@ -13,6 +13,7 @@ import {
   generateTicketPDF,
   sendTicketToEmail,
 } from "../../utils/myfunction.js";
+import { getConfigMailer } from "../config_perusahaan/get-config-mailer.js";
 
 export const registerEvent = async (req, res) => {
   try {
@@ -119,12 +120,12 @@ export const sendReminderEmailEvent = async (req, res) => {
         },
       },
     });
-
+    const partsMail = await getConfigMailer();
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "putramhmmd22@gmail.com",
-        pass: "nqtn lkuj zzix zdka",
+        user: partsMail.email,
+        pass: partsMail.password,
       },
     });
     const templateString = fs.readFileSync(
@@ -161,11 +162,12 @@ export const sendReminderEmailEvent = async (req, res) => {
         wag: dataEvent.wag,
         no: dataRegist.token_registration,
         terdaftarAt: myDate(dataRegist.created_at),
+        logo: `${process.env.SERVER_SIDE}${partsMail.logo}`,
       };
       const pdfTicket = await generateTicketPDF(dataSend);
 
       const mailOption = {
-        from: "putramhmmd22@gmail.com",
+        from: partsMail.email,
         to: registration.email_customer,
         subject: "Reminder: Your Event in Cacti Life",
         html: html,
@@ -217,11 +219,13 @@ export const sendReminderUpdatedEvent = async (req, res) => {
         },
       },
     });
+    const partsMail = await getConfigMailer();
+
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "putramhmmd22@gmail.com",
-        pass: "nqtn lkuj zzix zdka",
+        user: partsMail.email,
+        pass: partsMail.password,
       },
     });
     const templateString = fs.readFileSync(
@@ -242,7 +246,7 @@ export const sendReminderUpdatedEvent = async (req, res) => {
       };
       const html = ejs.render(templateString, data);
       const mailOption = {
-        from: "putramhmmd22@gmail.com",
+        from: partsMail.email,
         to: registration.email_customer,
         subject: "Update: Your event on Cacti Life has changed",
         html: html,
@@ -286,11 +290,12 @@ export const sendReminderPayEvent = async (req, res) => {
         },
       },
     });
+    const partsMail = await getConfigMailer();
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "putramhmmd22@gmail.com",
-        pass: "nqtn lkuj zzix zdka",
+        user: partsMail.email,
+        pass: partsMail.password,
       },
     });
     const templateString = fs.readFileSync(
@@ -309,7 +314,7 @@ export const sendReminderPayEvent = async (req, res) => {
     };
     const html = ejs.render(templateString, data);
     const mailOption = {
-      from: "putramhmmd22@gmail.com",
+      from: partsMail.email,
       to: registEvent.email_customer,
       subject: "Reminder: Complete Your Payment, Cacti Life",
       html: html,
@@ -339,7 +344,6 @@ export const sendReminderPayEvent = async (req, res) => {
 export const sendTicketEvent = async (req, res) => {
   try {
     const { regisEventID } = req.params;
-    console.log(regisEventID);
     const register_event = await prisma.register_Event.findFirst({
       where: {
         uuid: regisEventID,
@@ -352,12 +356,12 @@ export const sendTicketEvent = async (req, res) => {
         },
       },
     });
-
+    const partsMail = await getConfigMailer();
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "putramhmmd22@gmail.com",
-        pass: "nqtn lkuj zzix zdka",
+        user: partsMail.email,
+        pass: partsMail.password,
       },
     });
     const dataRegist = register_event;
@@ -375,11 +379,12 @@ export const sendTicketEvent = async (req, res) => {
       wag: dataEvent.wag,
       no: dataRegist.token_registration,
       terdaftarAt: myDate(dataRegist.created_at),
+      logo: `${process.env.SERVER_SIDE}${partsMail.logo}`,
     };
     const pdfTicket = await generateTicketPDF(dataSend);
 
     const mailOption = {
-      from: "putramhmmd22@gmail.com",
+      from: partsMail.email,
       to: dataRegist.email_customer,
       subject: "Reminder: Your Event in Cacti Life",
       attachments: [

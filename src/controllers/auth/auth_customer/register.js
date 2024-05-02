@@ -4,12 +4,12 @@ import { validateUsername } from "../../../utils/validation.js";
 import nodemailer from "nodemailer";
 import ejs from "ejs";
 import fs from "fs";
+import { getConfigMailer } from "../../config_perusahaan/get-config-mailer.js";
 
 export const register = async (req, res) => {
   try {
     const prisma = new PrismaClient();
     const { username, password, email, phone, address } = req.body;
-
     const checkUsername = validateUsername(username);
 
     if (!checkUsername) {
@@ -56,12 +56,12 @@ export const register = async (req, res) => {
           password: hashedPassword,
         },
       });
-
+      const partsMail = await getConfigMailer();
       const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-          user: "putramhmmd22@gmail.com",
-          pass: "nqtn lkuj zzix zdka",
+          user: partsMail.email,
+          pass: partsMail.password,
         },
       });
 
@@ -77,7 +77,7 @@ export const register = async (req, res) => {
       const html = ejs.render(templateString, data);
 
       const mailOption = {
-        from: "putramhmmd22@gmail.com",
+        from: partsMail.email,
         to: email,
         subject: "Konfirmasi Akun",
         html: html,

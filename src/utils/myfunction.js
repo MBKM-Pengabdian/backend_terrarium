@@ -3,6 +3,7 @@ import ejs from "ejs";
 import fs from "fs";
 import html_to_pdf from "html-pdf-node";
 import qrcode from "qrcode";
+import { getConfigMailer } from "../controllers/config_perusahaan/get-config-mailer.js";
 
 export const generateQRCode = async (text) => {
   try {
@@ -21,6 +22,7 @@ export const sendTicketToEmail = async (dataReceipt) => {
 
   // Generate QR code
   const qrCodeDataUrl = await generateQRCode(dataReceipt.codeqr);
+  const partsMail = await getConfigMailer();
 
   const dataTicket = {
     username: dataReceipt.username,
@@ -33,6 +35,7 @@ export const sendTicketToEmail = async (dataReceipt) => {
     wag: dataReceipt.wag,
     no: dataReceipt.no,
     terdaftarAt: dataReceipt.terdaftarAt,
+    logo: `${process.env.SERVER_SIDE}${partsMail.logo}`
   };
 
   // Render template EJS dengan dataTicket
@@ -45,13 +48,13 @@ export const sendTicketToEmail = async (dataReceipt) => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "putramhmmd22@gmail.com",
-      pass: "nqtn lkuj zzix zdka",
+      user: partsMail.email,
+      pass: partsMail.password,
     },
   });
 
   const mailOption = {
-    from: "putramhmmd22@gmail.com",
+    from: partsMail.email,
     to: dataReceipt.toEmail,
     subject: `Cacti Life - Your ticket ${dataReceipt.event_title}`,
     attachments: [
@@ -87,6 +90,7 @@ export const generateTicketPDF = async (dataReceipt) => {
     wag: dataReceipt.wag,
     no: dataReceipt.no,
     terdaftarAt: dataReceipt.terdaftarAt,
+    logo: dataReceipt.logo
   };
 
   // Render template EJS dengan dataTicket
@@ -97,5 +101,5 @@ export const generateTicketPDF = async (dataReceipt) => {
   // Generate PDF dari HTML
   let pdfBuffer = await html_to_pdf.generatePdf(file, options);
 
-  return pdfBuffer
+  return pdfBuffer;
 };

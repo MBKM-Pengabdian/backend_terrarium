@@ -70,7 +70,7 @@ export const createMethodPay = async (req, res) => {
   try {
     const { name_method, no_rek, nama_rek } = req.body;
 
-    let fileUrl = null;
+    let fileUrl = "/images/no-image.png";
     if (req.files["img_pay"]) {
       fileUrl = `/images/${req.files["img_pay"][0].filename}`;
       const compressedImgEventUrl = await compressImage(
