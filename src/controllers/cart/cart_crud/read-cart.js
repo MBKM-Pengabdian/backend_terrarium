@@ -13,7 +13,10 @@ export const getAllCart = async (req, res) => {
          },
          include: {
             product: true
-         }
+         },
+         orderBy: {
+            created_at: 'asc', // Urutkan berdasarkan created_at secara asc
+        },
       });
       res.json({
          status: 200,
