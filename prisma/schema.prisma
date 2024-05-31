@@ -77,6 +77,7 @@ model Product {
    description    String
    price          Float
    stock_quantity Int
+   product_weight Int?
    created_at     DateTime     @default(now())
    user_id        String
    user           User         @relation(fields: [user_id], references: [uuid])
