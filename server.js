@@ -18,6 +18,7 @@ import methodPayRouter from './src/routes/method-payment.js';
 import { registerOnServerStart } from './src/controllers/auth/auth_user/register.js';
 import ConfigPrshRouter from './src/routes/config-prsh.js';
 import RajaOngkir from './src/routes/raja-ongkir.js';
+import OrderProduct from './src/routes/order-product.js';
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use('/api/special-request/', specialRequestRoute)
 app.use('/api/method-pay/', methodPayRouter)
 app.use('/api/config-perusahaan/', ConfigPrshRouter)
 app.use('/api/expedition/', RajaOngkir)
+app.use('/api/order-product/', OrderProduct)
 
 app.listen(config.APP_PORT, async () => {
    console.log(`Server Activated On Port ${config.APP_PORT}`);
