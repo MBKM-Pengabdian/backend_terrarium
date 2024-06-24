@@ -111,24 +111,32 @@ export const uploadBuktiBayarOrderProduct = async (req, res) => {
 export const updateStatusOrderProduct = async (req, res) => {
   const { orderID } = req.params;
   const { status, alasan } = req.body;
-
+console.log(alasan);
   try {
-    const orderProduct = await prisma.order_Product.findUnique({
+    const pesananOrder = await prisma.order_Product.findUnique({
       where: { uuid: orderID },
+      include: {
+        order_item: {
+          include: {
+            product: true,
+          },
+        },
+        customer: true,
+      },
     });
-    if (!orderProduct) {
-      return res.status(404).json({ error: "Order Product not found" });
+    if (!pesananOrder) {
+      return res.status(404).json({ error: "Pesanan not found" });
     }
 
-    const udpateOrderProduct = await prisma.order_Product.update({
+    const udpatePesanan = await prisma.order_Product.update({
       where: { uuid: orderID },
-      data: { status_regis: status, alasan_bayar: alasan },
+      data: { order_status: status, alasan_bayar: alasan },
     });
-
+    
     res.json({
       status: 200,
       message: "Status successfully Update",
-      udpateOrderProduct,
+      udpatePesanan,
     });
   } catch (error) {
     console.error(error);

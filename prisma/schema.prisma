@@ -73,26 +73,28 @@ model Order_Product {
    city            String
    address         String
    shipping_method String
+   service_fee     Float?
    bukti_bayar     String       @default("")
    alasan_bayar    String       @default("")
 }
 
 model Product {
-   uuid           String          @id @default(uuid())
+   uuid           String       @id @default(uuid())
    product_name   String
    product_image  String?
    description    String
    price          Float
    stock_quantity Int
    product_weight Int?
-   created_at     DateTime        @default(now())
+   created_at     DateTime     @default(now())
    user_id        String
-   user           User            @relation(fields: [user_id], references: [uuid])
+   user           User         @relation(fields: [user_id], references: [uuid])
    review         Review[]
    order_item     Order_Item[]
    Cart           Cart[]
    Payment        Payment[]
-   status_product Int             @default(1)
+   status_product Int          @default(1)
+   sold           Int?         @default(0)
 }
 
 model Review {
@@ -108,14 +110,14 @@ model Review {
 }
 
 model Order_Item {
-   uuid       String   @id @default(uuid())
+   uuid       String        @id @default(uuid())
    product_id String
    order_id   String
    quantity   Int
    subtotal   Int
-   created_at DateTime @default(now())
-   product    Product  @relation(fields: [product_id], references: [uuid], onDelete: Cascade)
-   order      Order_Product    @relation(fields: [order_id], references: [uuid], onDelete: Cascade)
+   created_at DateTime      @default(now())
+   product    Product       @relation(fields: [product_id], references: [uuid], onDelete: Cascade)
+   order      Order_Product @relation(fields: [order_id], references: [uuid], onDelete: Cascade)
 }
 
 model Banner {
@@ -254,4 +256,5 @@ model Config_perusahaan {
    logo_prsh       String
    email_mailer    String?
    password_mailer String?
+   biayaLayanan    Float?
 }

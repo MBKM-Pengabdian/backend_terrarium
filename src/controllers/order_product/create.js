@@ -12,8 +12,9 @@ export const orderProduct = async (req, res) => {
       shipping_method,
       total_amount,
       order_item,
+      service_fee,
     } = req.body.data;
-    console.log(req.body.data);
+    // console.log(req.body.data);
     // Create the order product
     const orderProduct = await prisma.order_Product.create({
       data: {
@@ -24,6 +25,7 @@ export const orderProduct = async (req, res) => {
         city,
         address,
         shipping_method,
+        service_fee,
       },
     });
 
@@ -41,17 +43,36 @@ export const orderProduct = async (req, res) => {
     await prisma.order_Item.createMany({
       data: orderItemsData,
     });
+    // console.log(order_item);
+    // Update sold quantity and stock quantity for each product
+    for (const item of Object.values(order_item)) {
+      const product = await prisma.product.findUnique({
+        where: { uuid: item.product_id },
+        select: { sold: true, stock_quantity: true }
+      });
 
-     // Delete the items from the cart
-     const productIds = Object.values(order_item).map(item => item.product_id);
-     await prisma.cart.deleteMany({
-       where: {
-         customer_id: customer_id,
-         product_id: {
-           in: productIds,
-         },
-       },
-     });
+      const updatedSold = (product.sold || 0) + parseInt(item.quantity);
+      const updatedStockQuantity = product.stock_quantity - parseInt(item.quantity);
+
+      await prisma.product.update({
+        where: { uuid: item.product_id },
+        data: {
+          sold: updatedSold,
+          stock_quantity: updatedStockQuantity
+        }
+      });
+    }
+
+    // Delete the items from the cart
+    const productIds = Object.values(order_item).map((item) => item.product_id);
+    await prisma.cart.deleteMany({
+      where: {
+        customer_id: customer_id,
+        product_id: {
+          in: productIds,
+        },
+      },
+    });
 
     res.status(201).json({
       status: 201,

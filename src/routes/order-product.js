@@ -7,7 +7,7 @@ import { updateStatusOrderProduct, upload, uploadBuktiBayarOrderProduct } from "
 const OrderProduct = express.Router();
 
 OrderProduct.get('/get/',checkJWTAdmin, getAllOrder)
-OrderProduct.get('/get/customer/:uuid_customer',checkJWTCustomer, getOrderProductsByCustomer)
+OrderProduct.get('/get/customer/:customer_id',checkJWTCustomer, getOrderProductsByCustomer)
 OrderProduct.post('/store/customer', checkJWTCustomer, orderProduct);
 OrderProduct.post('/upload-bukti-bayar/:orderID/store', checkJWTCustomer, upload, uploadBuktiBayarOrderProduct);
 OrderProduct.post('/update-status/:orderID', checkJWTAdmin, updateStatusOrderProduct);

@@ -74,6 +74,7 @@ export const updateConfigPrsh = async (req, res) => {
       info_email,
       email_mailer,
       password_mailer,
+      biayaLayanan,
     } = req.body;
 
     const existingConfig = await prisma.config_perusahaan.findFirst({});
@@ -96,6 +97,7 @@ export const updateConfigPrsh = async (req, res) => {
           info_email,
           email_mailer,
           password_mailer,
+          biayaLayanan: parseFloat(biayaLayanan),
           logo_prsh: updateLogoPrsh, // rapikan lagi yg utk gambar logo_prsh nya
         },
       });
@@ -113,6 +115,7 @@ export const updateConfigPrsh = async (req, res) => {
           info_email,
           email_mailer,
           password_mailer,
+          biayaLayanan: parseFloat(biayaLayanan),
           logo_prsh: updatedLogoPrsh, // rapikan lagi yg utk gambar logo_prsh nya
         },
       });
