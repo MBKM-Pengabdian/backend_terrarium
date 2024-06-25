@@ -51,7 +51,7 @@ model Customer {
    address         String?
    created_at      DateTime          @default(now())
    status_customer Boolean           @default(false)
-   order           Order[]
+   order           Order_Product[]
    riview          Review[]
    jwt             Jwt_Customer[]
    Register_Event  Register_Event[]
@@ -60,14 +60,22 @@ model Customer {
    Special_Request Special_Request[]
 }
 
-model Order {
-   uuid         String       @id @default(uuid())
-   customer_id  String
-   order_date   DateTime     @default(now())
-   total_amount Float
-   created_at   DateTime     @default(now())
-   customer     Customer     @relation(fields: [customer_id], references: [uuid], onDelete: Cascade)
-   order_item   Order_Item[]
+model Order_Product {
+   uuid            String       @id @default(uuid())
+   customer_id     String
+   order_date      DateTime     @default(now())
+   total_amount    Float
+   created_at      DateTime     @default(now())
+   customer        Customer     @relation(fields: [customer_id], references: [uuid], onDelete: Cascade)
+   order_item      Order_Item[]
+   order_status    Int
+   province        String
+   city            String
+   address         String
+   shipping_method String
+   service_fee     Float?
+   bukti_bayar     String       @default("")
+   alasan_bayar    String       @default("")
 }
 
 model Product {
@@ -77,6 +85,7 @@ model Product {
    description    String
    price          Float
    stock_quantity Int
+   product_weight Int?
    created_at     DateTime     @default(now())
    user_id        String
    user           User         @relation(fields: [user_id], references: [uuid])
@@ -85,6 +94,7 @@ model Product {
    Cart           Cart[]
    Payment        Payment[]
    status_product Int          @default(1)
+   sold           Int?         @default(0)
 }
 
 model Review {
@@ -100,14 +110,14 @@ model Review {
 }
 
 model Order_Item {
-   uuid       String   @id @default(uuid())
+   uuid       String        @id @default(uuid())
    product_id String
    order_id   String
-   quantity   String
-   subtotal   String
-   created_at DateTime @default(now())
-   product    Product  @relation(fields: [product_id], references: [uuid], onDelete: Cascade)
-   order      Order    @relation(fields: [order_id], references: [uuid], onDelete: Cascade)
+   quantity   Int
+   subtotal   Int
+   created_at DateTime      @default(now())
+   product    Product       @relation(fields: [product_id], references: [uuid], onDelete: Cascade)
+   order      Order_Product @relation(fields: [order_id], references: [uuid], onDelete: Cascade)
 }
 
 model Banner {
@@ -246,4 +256,5 @@ model Config_perusahaan {
    logo_prsh       String
    email_mailer    String?
    password_mailer String?
+   biayaLayanan    Float?
 }

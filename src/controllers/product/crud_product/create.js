@@ -36,7 +36,7 @@ export const upload = multer({
 export const createProduct = async (req, res) => {
    try {
 
-      const { user_id, product_name, description, price, stock_quantity } = req.body;
+      const { user_id, product_name, description, price, stock_quantity, product_weight } = req.body;
 
       let fileUrl = "/images/no-image.png"
 
@@ -78,6 +78,7 @@ export const createProduct = async (req, res) => {
             description,
             price: parsedPrice,
             stock_quantity: parsedStockQuantity,
+            product_weight: parseInt(product_weight)
          },
       });
 
