@@ -8,6 +8,7 @@ generator client {
 datasource db {
    provider = "postgresql"
    url      = env("DATABASE_URL")
+   directUrl = env("DIRECT_URL")
 }
 
 model Jwt {
@@ -257,4 +258,5 @@ model Config_perusahaan {
    email_mailer    String?
    password_mailer String?
    biayaLayanan    Float?
+   alamat_frame    String?
 }
