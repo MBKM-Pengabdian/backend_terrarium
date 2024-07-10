@@ -60,9 +60,14 @@ export const getAllProductActive = async (req, res) => {
          where: {
             status_product: 1,
          },
-         orderBy: {
-            created_at: 'asc',
-         },
+         orderBy: [
+            {
+               stock_quantity: 'desc'
+            },
+            // {
+            //    sold: 'desc'
+            // },
+         ],
       });
 
       res.status(200).send({
