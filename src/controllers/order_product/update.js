@@ -111,7 +111,6 @@ export const uploadBuktiBayarOrderProduct = async (req, res) => {
 export const updateStatusOrderProduct = async (req, res) => {
   const { orderID } = req.params;
   const { status, alasan } = req.body;
-console.log(alasan);
   try {
     const pesananOrder = await prisma.order_Product.findUnique({
       where: { uuid: orderID },
@@ -135,6 +134,49 @@ console.log(alasan);
     
     res.json({
       status: 200,
+      message: "Status successfully Update",
+      udpatePesanan,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const confirmOrderProductFromCustomer = async (req, res) => {
+  const { orderID } = req.params;
+  const { customerId } = req.body;
+  try {
+    const customerData = await prisma.customer.findUnique({
+      where: { uuid: customerId },
+    });
+
+    if (!customerData) {
+      return res.status(404).json({ error: "User tidak terdaftar" });
+    }
+
+    const pesananOrder = await prisma.order_Product.findUnique({
+      where: { uuid: orderID },
+      include: {
+        order_item: {
+          include: {
+            product: true,
+          },
+        },
+        customer: true,
+      },
+    });
+    if (!pesananOrder) {
+      return res.status(404).json({ error: "Pesanan not found" });
+    }
+
+    const udpatePesanan = await prisma.order_Product.update({
+      where: { uuid: orderID },
+      data: { order_status: 4 },
+    });
+    
+    res.json({
+      status: 201,
       message: "Status successfully Update",
       udpatePesanan,
     });
