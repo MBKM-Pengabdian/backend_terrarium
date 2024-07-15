@@ -1,14 +1,17 @@
 import express from 'express';
-import { checkJWTCustomer } from '../middleware/jwt.js';
-import { getAllCart } from '../controllers/cart/cart_crud/read-cart.js';
+import { checkJWTAdmin, checkJWTCustomer, checkJWTSuperAdmin } from '../middleware/jwt.js';
+import { getAllCartByIdCustomer, getAllCartCustomer } from '../controllers/cart/cart_crud/read-cart.js';
 import { storeCart } from '../controllers/cart/cart_crud/create-cart.js';
 import { deleteCart } from '../controllers/cart/cart_crud/delete-cart.js';
 import { increaseQuantity, decreaseQuantity } from '../controllers/cart/cart_count_quantity/cart_count_quantity.js';
+import { sendNotifCartCustomer } from '../controllers/cart/cart_send_notif/send-notif.js';
 
 const cartRouter = express.Router();
 
-cartRouter.get('/get/:customer_id', checkJWTCustomer, getAllCart);
+cartRouter.get('/get/', checkJWTAdmin,checkJWTSuperAdmin, getAllCartCustomer);
+cartRouter.get('/get/:customer_id', checkJWTCustomer, getAllCartByIdCustomer);
 cartRouter.post('/store', checkJWTCustomer, storeCart);
+cartRouter.post('/send-notif', checkJWTAdmin, checkJWTSuperAdmin, sendNotifCartCustomer);
 cartRouter.delete('/delete/:uuid', checkJWTCustomer, deleteCart);
 
 // cart count 
