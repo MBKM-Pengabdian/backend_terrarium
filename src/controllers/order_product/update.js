@@ -110,7 +110,7 @@ export const uploadBuktiBayarOrderProduct = async (req, res) => {
 
 export const updateStatusOrderProduct = async (req, res) => {
   const { orderID } = req.params;
-  const { status, alasan } = req.body;
+  const { status, alasan, no_resi } = req.body;
   try {
     const pesananOrder = await prisma.order_Product.findUnique({
       where: { uuid: orderID },
@@ -129,7 +129,7 @@ export const updateStatusOrderProduct = async (req, res) => {
 
     const udpatePesanan = await prisma.order_Product.update({
       where: { uuid: orderID },
-      data: { order_status: status, alasan_bayar: alasan },
+      data: { order_status: status, alasan_bayar: alasan, no_resi: no_resi },
     });
     
     res.json({
