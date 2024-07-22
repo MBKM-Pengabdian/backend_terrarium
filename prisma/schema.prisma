@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-   provider  = "postgresql"
-   url       = env("DATABASE_URL")
+   provider = "postgresql"
+   url      = env("DATABASE_URL")
    // directUrl = env("DIRECT_URL")
 }
 
@@ -62,22 +62,25 @@ model Customer {
 }
 
 model Order_Product {
-   uuid            String       @id @default(uuid())
-   customer_id     String
-   order_date      DateTime     @default(now())
-   total_amount    Float
-   created_at      DateTime     @default(now())
-   customer        Customer     @relation(fields: [customer_id], references: [uuid], onDelete: Cascade)
-   order_item      Order_Item[]
-   order_status    Int
-   province        String
-   city            String
-   address         String
-   shipping_method String
-   service_fee     Float?
-   bukti_bayar     String       @default("")
-   alasan_bayar    String       @default("")
-   no_resi         String?      @default("")
+   uuid             String       @id @default(uuid())
+   customer_id      String
+   order_date       DateTime     @default(now())
+   total_amount     Float
+   subtotal_product Float?
+   created_at       DateTime     @default(now())
+   customer         Customer     @relation(fields: [customer_id], references: [uuid], onDelete: Cascade)
+   order_item       Order_Item[]
+   order_status     Int
+   province         String
+   city             String
+   address          String
+   shipping_method  String
+   discount_value   Float?       @default(0)
+   promo_code       String?      @default("")
+   service_fee      Float?
+   bukti_bayar      String       @default("")
+   alasan_bayar     String       @default("")
+   no_resi          String?      @default("")
 }
 
 model Product {
@@ -261,13 +264,15 @@ model Config_perusahaan {
    biayaLayanan    Float?
    alamat_frame    String?
 }
+
 model Promo_Code {
-   uuid           String   @id @default(uuid())
-   code           String   @unique
-   discount_value Float
-   expiry_date    DateTime
-   usage_limit    Int?
-   used_count     Int      @default(0)
-   isSingleUse    Boolean  @default(false)
+   uuid                 String   @id @default(uuid())
+   code                 String   @unique
+   discount_value       Float
+   expiry_date          DateTime
+   usage_limit          Int?
+   used_count           Int      @default(0)
+   isSingleUse          Boolean  @default(false)
    allowed_customer_ids String?
+   used_customer_ids    String?
 }

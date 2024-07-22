@@ -40,10 +40,19 @@ export const checkPromoCode = async (req, res) => {
       });
     }
 
+    // Validasi apakah customer_id sudah terdapat dalam used_customer_ids
+    const usedCustomerIds = promo.used_customer_ids ? JSON.parse(promo.used_customer_ids) : [];
+    if (usedCustomerIds.includes(customer_id)) {
+      return res.status(400).json({
+        status: 400,
+        message: "Kode promo sudah pernah anda gunakan",
+      });
+    }
+
     // Jika semua validasi berhasil, kirim respons sukses dengan data promo
     res.status(200).json({
       status: 200,
-      message: "Promo code is valid",
+      message: "Kode promo valid",
       promoCode: promo,
     });
   } catch (error) {
