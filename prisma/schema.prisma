@@ -275,4 +275,5 @@ model Promo_Code {
    isSingleUse          Boolean  @default(false)
    allowed_customer_ids String?
    used_customer_ids    String?
+   created_at           DateTime @default(now())
 }
