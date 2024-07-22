@@ -11,21 +11,26 @@ export const orderProduct = async (req, res) => {
       address,
       shipping_method,
       total_amount,
+      subtotal_product,
       order_item,
       service_fee,
+      discount_value,
+      promo_code,
     } = req.body.data;
-    // console.log(req.body.data);
     // Create the order product
     const orderProduct = await prisma.order_Product.create({
       data: {
         customer_id,
         total_amount: parseFloat(total_amount),
+        subtotal_product: parseFloat(subtotal_product),
         order_status: 1,
         province,
         city,
         address,
         shipping_method,
         service_fee,
+        discount_value,
+        promo_code,
       },
     });
 
@@ -48,18 +53,19 @@ export const orderProduct = async (req, res) => {
     for (const item of Object.values(order_item)) {
       const product = await prisma.product.findUnique({
         where: { uuid: item.product_id },
-        select: { sold: true, stock_quantity: true }
+        select: { sold: true, stock_quantity: true },
       });
 
       const updatedSold = (product.sold || 0) + parseInt(item.quantity);
-      const updatedStockQuantity = product.stock_quantity - parseInt(item.quantity);
+      const updatedStockQuantity =
+        product.stock_quantity - parseInt(item.quantity);
 
       await prisma.product.update({
         where: { uuid: item.product_id },
         data: {
           sold: updatedSold,
-          stock_quantity: updatedStockQuantity
-        }
+          stock_quantity: updatedStockQuantity,
+        },
       });
     }
 
@@ -73,6 +79,33 @@ export const orderProduct = async (req, res) => {
         },
       },
     });
+
+    // Update the promo code usage
+    if (promo_code) {
+      const promo = await prisma.promo_Code.findUnique({
+        where: { code: promo_code },
+      });
+
+      if (promo) {
+        // Parse the existing used_customer_ids
+        let usedCustomerIds = promo.used_customer_ids
+          ? JSON.parse(promo.used_customer_ids)
+          : [];
+
+        // Add the current customer_id to the used_customer_ids
+        if (!usedCustomerIds.includes(customer_id)) {
+          usedCustomerIds.push(customer_id);
+        }
+
+        await prisma.promo_Code.update({
+          where: { code: promo_code },
+          data: {
+            used_count: promo.used_count + 1,
+            used_customer_ids: JSON.stringify(usedCustomerIds),
+          },
+        });
+      }
+    }
 
     res.status(201).json({
       status: 201,
