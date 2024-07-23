@@ -46,7 +46,18 @@ export const getCustomerById = async (req, res) => {
             },
           },
         },
+        order: {
+          include: {
+            order_item: {
+              include:{
+                product: true
+              }
+            },
+            customer: true
+          }
+        },
         Special_Request: true,
+        Cart: true,
       },
     });
 

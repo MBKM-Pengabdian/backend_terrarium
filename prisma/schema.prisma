@@ -108,7 +108,7 @@ model Review {
    customer_id String
    rating      Int
    comment     String
-   img_review  String
+   img_review  String?
    created_at  DateTime @default(now())
    product     Product  @relation(fields: [product_id], references: [uuid], onDelete: Cascade)
    customer    Customer @relation(fields: [customer_id], references: [uuid], onDelete: Cascade)
