@@ -155,7 +155,7 @@ export const createEvent = async (req, res) => {
                 speaker_event,
                 banner_event: bannerEventFileUrl,
                 tag_event,
-                date_event: dateFormat(date_event),
+                date_event,
                 last_regist_event,
                 kuota_event: parsedKuotaEvent,
             },

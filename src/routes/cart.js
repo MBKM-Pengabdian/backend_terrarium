@@ -5,7 +5,7 @@ import { storeCart } from '../controllers/cart/cart_crud/create-cart.js';
 import { deleteCart } from '../controllers/cart/cart_crud/delete-cart.js';
 import { increaseQuantity, decreaseQuantity } from '../controllers/cart/cart_count_quantity/cart_count_quantity.js';
 import { sendNotifCartCustomer } from '../controllers/cart/cart_send_notif/send-notif.js';
-import { checkPromoCode } from '../controllers/cart/promo_code/read.js';
+import { checkPromoCode } from '../controllers/promo_code/read.js';
 
 const cartRouter = express.Router();
 

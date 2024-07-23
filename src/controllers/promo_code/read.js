@@ -1,6 +1,40 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
+export const getAllPromoCodes = async (req, res) => {
+  try {
+    const promoCodes = await prisma.promo_Code.findMany();
+    
+    // Map to collect customers data based on allowed_customer_ids
+    const promoCodesWithCustomers = await Promise.all(promoCodes.map(async promo => {
+      let allowedCustomerIds = JSON.parse(promo.allowed_customer_ids || "[]");
+      let customers = [];
+      
+      if (allowedCustomerIds.length > 0) {
+        customers = await prisma.customer.findMany({
+          where: {
+            uuid: {
+              in: allowedCustomerIds,
+            },
+          },
+        });
+      }
+
+      return {
+        ...promo,
+        customers: customers,
+      };
+    }));
+
+    res.status(200).json({
+      status: 200,
+      data: promoCodesWithCustomers,
+    });
+  } catch (error) {
+    console.error("Error getting promo codes:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 export const checkPromoCode = async (req, res) => {
   const { promo_code, customer_id } = req.body;
   try {
