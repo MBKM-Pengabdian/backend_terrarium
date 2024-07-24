@@ -19,7 +19,7 @@ export const createReview = async (req, res) => {
        });
      }));
  
-     res.status(201).json({ message: 'Reviews created successfully', reviews });
+     res.status(201).json({status: 200, message: 'Reviews created successfully', });
    } catch (error) {
      console.error(error);
      res.status(500).json({ error: 'Internal Server Error' });

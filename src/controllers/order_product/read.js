@@ -11,7 +11,11 @@ export const getOrderProductsByCustomer = async (req, res) => {
       include: {
         order_item: {
           include: {
-            product: true,
+            product: {
+              include: {
+                review: true,
+              },
+            },
           },
         },
         customer: true,

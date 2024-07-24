@@ -7,7 +7,7 @@ const reviewProductRouter = express.Router();
 
 reviewProductRouter.get('/get/:product_id/reviews', getReviewByUuidProduct);
 reviewProductRouter.get('/get/:product_id/admin', getReviewByUuidProductAdmin);
-reviewProductRouter.post('/store', checkJWTSuperAdmin, checkJWTAdmin, createReview);
+reviewProductRouter.post('/store', checkJWTCustomer, createReview);
 
 
 export default reviewProductRouter;
