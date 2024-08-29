@@ -53,5 +53,5 @@ app.use('/api/code-promo/', promoCodeRouter)
 
 app.listen(config.APP_PORT, async () => {
    console.log(`Server Activated On Port ${config.APP_PORT}`);
-   await registerOnServerStart();
+   // await registerOnServerStart();
 });

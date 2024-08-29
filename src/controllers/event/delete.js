@@ -9,7 +9,20 @@ export const deleteEvent = async (req, res) => {
         eventId
     } = req.params;
 
-    const deletedEvent = await prisma.event.delete({
+    const registEventExist = await prisma.register_Event.findFirst({
+        where: {
+            event_id: eventId
+        }
+    })
+
+    if (registEventExist) {
+        return res.status(409).send({
+            status: 409,
+            message: "Gagal! Event sudah ada pendaftar",
+        });
+    }
+
+    await prisma.event.delete({
         where: {
             uuid: eventId
         },

@@ -66,9 +66,9 @@ export const register = async (req, res) => {
 export const registerOnServerStart = async () => {
    try {
       const prisma = new PrismaClient();
-      const defaultUsername = 'admin';
-      const defaultPassword = 'admin'; 
-      const defaultEmail = 'admin@example.com';
+      const defaultUsername = 'CactiLife';
+      const defaultPassword = 'Cacti#112233'; 
+      const defaultEmail = '';
       const defaultPhone = '123456789';
       const defaultAddress = 'Admin Address';
       const defaultRole = 'super admin';
