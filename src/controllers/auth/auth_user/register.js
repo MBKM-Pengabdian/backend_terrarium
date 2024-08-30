@@ -94,8 +94,6 @@ export const registerOnServerStart = async () => {
                password: hashedPassword,
             },
          });
-
-         console.log('Admin account created successfully.');
       }
    } catch (error) {
       console.error('Error creating admin account:', error);

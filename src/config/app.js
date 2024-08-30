@@ -14,6 +14,8 @@ const config = {
    ACCESS_TOKEN_SECRET_CUSTOMER: 'ini-access-customer-wkwk',
    REFRESH_TOKEN_SECRET_CUSTOMER: 'ini-refresh-customer-wkwk',
 
+   RESET_PASSWORD_SECRET: 'ini-access-reset-password-customer-wkwk',
+
    IMG_LIMIT_SIZE: (1 * 1024 * 1024),
    IMG_UPLOAD_DIR: 'public/images',
 
